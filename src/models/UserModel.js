@@ -1,21 +1,37 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const uniqueValidator = require('mongoose-beautiful-unique-validation');
+
 
 //Schema de User
-var UserSchema = new Schema({
+let UserSchema = new Schema({
     pseudo: {
         type: String,
-        required: true
+        required: "Un pseudo est requis",
+        unique: "Ce pseudo est déjà utilisé"
     },
     email: {
         type: String,
-        required: tue
+        required: "Une adresse email est requise",
+        validate: { //validation du mail (invoquer validate())
+            validator: (value) => {
+                if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value))
+                    return Promise.resolve(true)
+                else
+                    return Promise.resolve(false)
+            },
+            message: "Email non conforme"
+        },
+        unique: "Cette adresse mail a déjà été utilisé"
     },
     password: {
         type: String,
-        required: true
+        required: "Un mot de passe est requis"
     }
 });
+
+//personnalise les messages d'erreur
+UserSchema.plugin(uniqueValidator)
 
 //Definition du model
 let User;
