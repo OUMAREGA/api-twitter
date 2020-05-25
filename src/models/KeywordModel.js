@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 let KeywordSchema = new Schema({
     word: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     users: [{
         pseudo: String,
