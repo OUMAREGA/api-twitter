@@ -1,0 +1,19 @@
+version: '3.6'
+services:
+  node:
+    container_name: api_twitter_node
+    image: 'node:latest'
+    working_dir: /home/node/app
+    command:
+        - "/bin/bash"
+        - "-c"
+        - "npm install && npm start" 
+    ports:
+      - '3000:3000'
+    volumes:
+      - './src:/home/node/app'
+  mongo:
+    container_name: api_twitter_mongo
+    image: mongo
+    ports:
+      - "27017:27017"
