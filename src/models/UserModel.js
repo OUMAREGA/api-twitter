@@ -29,7 +29,8 @@ let UserSchema = new Schema({
         required: "Un mot de passe est requis"
     },
     pseudo_twitter: {
-        type: String
+        type: String,
+        unique: "Le pseudo twitter est déjà utilisé"
     }
 });
 
