@@ -7,8 +7,7 @@ var session = require('express-session')
 app.use(session({
     secret: 'P)j5yBV(kShrY{*@',
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true }
+    saveUninitialized: false,
   }))
 
 mongoose.connect("mongodb://mongo/api_twitter_BDD");
