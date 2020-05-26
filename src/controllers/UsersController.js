@@ -18,6 +18,7 @@ let UserController = {
                 //Si le mail est déjà utilisé
                 erreurs.push('Cet email est utilisé pour un autre compte');
                 res.render("form-sign.ejs", {erreurs: erreurs});
+                return;
             }
             else
             {
@@ -25,6 +26,7 @@ let UserController = {
                 if(password != repassword){
                     erreurs.push('Les mots de passe ne correspondent pas.');
                     res.render("form-sign.ejs", {erreurs: erreurs});
+                    return;
                 }
 
                 //Generation d'un Password hash basé sur sha1
@@ -44,6 +46,8 @@ let UserController = {
                     if(err){
                         erreurs.push(err);
                         res.render("form-sign.ejs", {erreurs: erreurs});
+                        return;
+                        
                     }else{
                         //Sauvegarde User
                         user.save(function(err){
@@ -51,6 +55,7 @@ let UserController = {
                             {
                                 erreurs.err = err;
                                 res.render("form-sign.ejs", {erreurs: erreurs});
+                                return;
                             }
                             res.redirect('/connexion');
                         });
