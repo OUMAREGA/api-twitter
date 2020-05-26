@@ -8,6 +8,7 @@ let UserSchema = new Schema({
     pseudo: {
         type: String,
         required: "Un pseudo est requis",
+
         unique: "Ce pseudo est déjà utilisé"
     },
     email: {
@@ -29,8 +30,7 @@ let UserSchema = new Schema({
         required: "Un mot de passe est requis"
     },
     pseudo_twitter: {
-        type: String,
-        unique: "Le pseudo twitter est déjà utilisé"
+        type: String
     }
 });
 
@@ -38,11 +38,8 @@ let UserSchema = new Schema({
 UserSchema.plugin(uniqueValidator)
 
 //Definition du model
-let User;
-if(mongoose.models.User)
-    User = mongoose.model('User');
-else
-    User = mongoose.model('User', UserSchema);
+
+mongoose.model('User', UserSchema);
 
 //Export du model
-module.exports = User;
+module.exports = mongoose.model("User");
