@@ -2,6 +2,13 @@ const express = require('express')
 const app = express()
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+var session = require('express-session')
+
+app.use(session({
+    secret: 'P)j5yBV(kShrY{*@',
+    resave: false,
+    saveUninitialized: false,
+  }))
 
 mongoose.connect("mongodb://mongo/api_twitter_BDD");
 
