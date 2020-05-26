@@ -20,6 +20,10 @@ app.get('/connexion', function(req, res) {
     res.render("connexion.ejs");
 })
 
+app.get('/form-sign', function(req, res) {
+    res.render("form-sign.ejs", { framework: "Bootstrap" })
+})
+
 app.listen(3000, function() {
     console.log('Example app listening on port 3000!')
 })
