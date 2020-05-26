@@ -17,12 +17,14 @@ let UserController = {
             if(usr.length > 0){
                 //Si le mail est déjà utilisé
                 erreurs.push('Cet email est utilisé pour un autre compte');
+                res.render("form-sign.ejs", {erreurs: erreurs});
             }
             else
             {
                 //Vérifie si les mots de passe sont égaux
                 if(password != repassword){
                     erreurs.push('Les mots de passe ne correspondent pas.');
+                    res.render("form-sign.ejs", {erreurs: erreurs});
                 }
 
                 //Generation d'un Password hash basé sur sha1
