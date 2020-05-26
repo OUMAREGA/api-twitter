@@ -49,6 +49,13 @@ app.get('/form-sign', function(req, res) {
     res.render("form-sign.ejs", { framework: "Bootstrap" })
 })
 
+app.get('/mon-compte', function(req, res) {
+    res.render("profile.ejs", { framework: "Bootstrap" })
+})
+app.get('/modifier-mon-compte', function(req, res) {
+    res.render("modifier-mon-compte.ejs", { framework: "Bootstrap" })
+})
+
 app.listen(3000, function() {
     console.log('Example app listening on port 3000!')
 })
