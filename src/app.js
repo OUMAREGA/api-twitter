@@ -2,6 +2,10 @@ const express = require('express')
 const app = express()
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+
+const bodyParser = require("body-parser");
+
+const userRoutes = require('./routes/routesUser');
 var session = require('express-session')
 
 app.use(session({
@@ -18,6 +22,9 @@ app.set("views", "views"); //éviter de préciser le chemin de la vue, directeme
 app.use('/bs', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(userRoutes());
 
 app.get('/', function(req, res) {
     let data = [];
@@ -40,11 +47,11 @@ app.get('/', function(req, res) {
         tweets: data
     })
 })
-
+//Accède à la page inscription
 app.get('/connexion', function(req, res) {
     res.render("connexion.ejs");
 })
-
+//Accède à la page connexion
 app.get('/form-sign', function(req, res) {
     res.render("form-sign.ejs", { framework: "Bootstrap" })
 })
