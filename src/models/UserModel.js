@@ -20,7 +20,7 @@ let UserSchema = new Schema({
                 else
                     return Promise.resolve(false)
             },
-            message: "https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweetsEmail non conforme"
+            message: "Email non conforme"
         },
         unique: "Cette adresse mail a déjà été utilisé"
     },
