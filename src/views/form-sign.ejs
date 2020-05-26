@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Formulaire d'inscription</title>
+    <link href="/bs/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-4">
+        <div class="row d-flex justify-content-center">
+            <div class="col-6">
+                <h1>Inscription</h1><hr>
+                <form method="post" action="../controllers/UsersController.js">
+                    <div class="form-group">
+                        <label class="col-form-label" for="inputPseudo">Pseudo</label>
+                        <input type="text" class="form-control" id="inputPseudo" aria-describedby="pseudoHelp" placeholder="pseudo" required>
+                        <div class="invalid-feedback">Un pseudo est obligatoire.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="inputEmail">Email</label>
+                        <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="email" required>
+                        <div class="invalid-feedback">Entrer un email valide s'il vous plaît.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="inputPassword">Mot de passe</label>
+                        <input type="password" class="form-control" id="inputPassword" placeholder="mot de passe" required>
+                        <div class="invalid-feedback">Choisissez un mot de passe s'il vous plaît.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="inputPasswordC">Confirmation du mot de passe</label>
+                        <input type="password" class="form-control" id="inputPasswordC" placeholder="mot de passe" required>
+                        <div class="invalid-feedback">Choisissez un mot de passe s'il vous plaît.</div>
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="s'inscrire">
+                    <a class="ml-4" href="/connexion">se connecter</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+</body>
+
+</html>
