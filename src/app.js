@@ -16,6 +16,10 @@ app.get('/', function(req, res) {
     res.render("index.ejs", { framework: "Bootstrap" })
 })
 
+app.get('/connexion', function(req, res) {
+    res.render("connexion.ejs");
+})
+
 app.listen(3000, function() {
     console.log('Example app listening on port 3000!')
 })
