@@ -16,6 +16,10 @@ app.get('/', function(req, res) {
     res.render("index.ejs", { framework: "Bootstrap" })
 })
 
+app.get('/connexion', function(req, res) {
+    res.render("connexion.ejs");
+})
+
 app.get('/form-sign', function(req, res) {
     res.render("form-sign.ejs", { framework: "Bootstrap" })
 })
