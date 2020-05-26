@@ -20,7 +20,25 @@ app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist'));
 
 app.get('/', function(req, res) {
-    res.render("index.ejs", { framework: "Bootstrap" })
+    let data = [];
+
+    data = [{
+            "title": "Mon premier tweet",
+            "text": "Ceci est ma première utilisation de Twiiter"
+        },
+        {
+            "title": "Mon premier tweet",
+            "text": "Ceci est ma première utilisation de Twiiter"
+        }, {
+            "title": "Mon premier tweet",
+            "text": "Ceci est ma première utilisation de Twiiter"
+        }
+    ]
+
+    res.render("index.ejs", {
+        pseudo: "hello",
+        tweets: data
+    })
 })
 
 app.get('/connexion', function(req, res) {
