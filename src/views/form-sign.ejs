@@ -13,6 +13,19 @@
     <div class="container mt-4">
         <div class="row d-flex justify-content-center">
             <div class="col-6">
+                    <% if(typeof(erreurs) !== "undefined") {%>
+                        <div class="alert alert-dismissible alert-danger mb-4">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <ul>
+                        <% erreurs.forEach(function(erreur){ %>
+                        
+                                <li class="text-black"><%= erreur %></li>
+                        
+                        <% });%>
+                    </ul>    
+                </div>
+                    <%}%>
+
                 <h1>Inscription</h1><hr>
                 <form method="post" action="/sign-users">
                     <div class="form-group">
@@ -33,15 +46,8 @@
                         <input type="password" class="form-control" id="inputPasswordC" name="inputPasswordC" placeholder="mot de passe" required>
                     </div>
                     <input type="submit" class="btn btn-primary" value="s'inscrire">
-                    <a class="ml-4" href="/connexion">se connecter</a>
+                    <a class="ml-4 btn btn-outline-secondary" href="/connexion">se connecter</a>
                 </form>
-                <% if(typeof(erreurs) !== "undefined") {%>
-                <ul>
-                <% erreurs.forEach(function(erreur){ %>
-                    <li class="text-danger"><%= erreur %></li>
-                  <% });%>
-                </ul>
-                <%}%>
             </div>
         </div>
     </div>
