@@ -82,7 +82,6 @@ let UserController = {
                         if (result == true) {
                             req.session.connected = true;
                             req.session.userData = users[0];
-                            console.log(req.session.userData);
                             res.redirect('/');
                         } else {
                             erreurs.push('Mot de passe incorrect');
