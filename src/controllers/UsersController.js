@@ -12,7 +12,7 @@ let UserController = {
 
     //Créé un User
 
-    create: function(req, res){
+    create: function (req, res) {
 
         let repassword = req.body.inputPasswordC;
         let password = req.body.inputPassword;
@@ -22,44 +22,44 @@ let UserController = {
 
         //Vérifie si l'email existe déjà
 
-        User.find({'email': userEmail}, function(err, usr) {         
-            if(usr.length > 0){
+        User.find({ 'email': userEmail }, function (err, usr) {
+            if (usr.length > 0) {
                 //Si le mail est déjà utilisé
                 erreurs.push('Cet email est utilisé pour un autre compte');
-            } 
+            }
         });
-            
+
         if (password !== repassword) {
             erreurs.push('Les mots de passe ne correspondent pas.');
         }
-            
-            
-    
+
+
+
         //Generation d'un Password hash basé sur sha1
 
-                //Creation de User
+        //Creation de User
 
-                let user = new User();
-                user.pseudo = userPseudo;
-                user.email = userEmail;
-                user.password = password; //gérer hashage ensuite
+        let user = new User();
+        user.pseudo = userPseudo;
+        user.email = userEmail;
+        user.password = password; //gérer hashage ensuite
 
 
-                user.save(function(err){
-                    
-                if(err) {
-                    erreurs.push(err.errors.pseudo.message);
-                }
-                
-                if(erreurs.length > 0) {
-                    res.render("form-sign.ejs", {erreurs: erreurs});
-                    return;
-                 } else {
+        user.save(function (err) {
 
-                    res.redirect("/connexion");
-                    return;
-                 }
-            });
+            if (err) {
+                erreurs.push(err.errors.pseudo.message);
+            }
+
+            if (erreurs.length > 0) {
+                res.render("form-sign.ejs", { erreurs: erreurs });
+                return;
+            } else {
+
+                res.redirect("/connexion");
+                return;
+            }
+        });
 
     },
 
@@ -99,5 +99,5 @@ let UserController = {
 
 }
 
-module.exports = UserController; 
+module.exports = UserController;
 
