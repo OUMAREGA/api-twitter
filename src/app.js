@@ -11,6 +11,9 @@ const MongoStore = require('connect-mongo')(session);
 
 mongoose.connect("mongodb://mongo/api_twitter_BDD");
 
+const middleware = require('./controllers/AuthMiddleware')
+
+
 app.use(session({
     secret: 'P)j5yBV(kShrY{*@',
     resave: false,
@@ -28,7 +31,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(userRoutes());
 
-app.get('/', function(req, res) {
+app.get('/',[middleware], function(req, res) {
     let data = [];
 
     data = [{
@@ -51,7 +54,7 @@ app.get('/', function(req, res) {
 })
 
 /*Récupère les tweets d'un compte*/
-const fetch = require('node-fetch')
+/*const fetch = require('node-fetch')
 
 fetch("https://api.twitter.com/1.1/search/tweets.json?q=from:BekoFere", {
   method: "GET",
@@ -60,7 +63,7 @@ fetch("https://api.twitter.com/1.1/search/tweets.json?q=from:BekoFere", {
   }
 })
 .then(res => res.json())
-    .then(json => console.log(json));
+    .then(json => console.log(json));*/
 
 /*Fin de la récupération des tweets */
 
@@ -68,21 +71,17 @@ fetch("https://api.twitter.com/1.1/search/tweets.json?q=from:BekoFere", {
 app.get('/connexion', function(req, res) {
     res.render("connexion.ejs");
 })
+
 //Accède à la page connexion
 app.get('/form-sign', function(req, res) {
     res.render("form-sign.ejs", { framework: "Bootstrap" })
 })
 
-app.get('/mon-compte', function(req, res) {
+app.get('/mon-compte', [middleware], function(req, res) {
     res.render("profile.ejs", { framework: "Bootstrap" })
 })
-app.get('/modifier-mon-compte', function(req, res) {
+app.get('/modifier-mon-compte', [middleware], function(req, res) {
     res.render("modifier-mon-compte.ejs", { framework: "Bootstrap" })
-})
-
-//Accède à la page inscription
-app.get('/connexion', function(req, res) {
-    res.render("connexion.ejs");
 })
 
 app.listen(3000, function() {
