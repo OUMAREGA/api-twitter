@@ -1,9 +1,7 @@
 const User = require('../models/UserModel');
-const crypto = require('crypto');
-
 const bcrypt = require('bcrypt');
 
-const saltRound = 10;
+const saltRounds = 10;
 
 
 
@@ -33,33 +31,56 @@ let UserController = {
             erreurs.push('Les mots de passe ne correspondent pas.');
         }
 
-
-
-        //Generation d'un Password hash basé sur sha1
+        const salt = bcrypt.genSaltSync(saltRounds);
+        const hash = bcrypt.hashSync(password, salt);
 
         //Creation de User
-
         let user = new User();
         user.pseudo = userPseudo;
         user.email = userEmail;
-        user.password = password; //gérer hashage ensuite
+        user.password = hash;
 
+        console.log(JSON.stringify(user));
 
-        user.save(function (err) {
-
-            if (err) {
-                erreurs.push(err.errors.pseudo.message);
+        user.save(function (error) {
+            if (error) {
+                //error.errors.pseudo.message
+                erreurs.push("Erreur lors de la sauvegarde de l'utilisateur");
             }
 
             if (erreurs.length > 0) {
                 res.render("form-sign.ejs", { erreurs: erreurs });
                 return;
             } else {
-
                 res.redirect("/connexion");
                 return;
             }
         });
+        /*
+        bcrypt.hash(password, saltRounds, function (err, hash) {
+            //Creation de User
+            let user = new User();
+            user.pseudo = userPseudo;
+            user.email = userEmail;
+            user.password = hash;
+
+            user.save(function (err) {
+                if (err) {
+                    //err.errors.pseudo.message
+                    erreurs.push("Erreur lors du save user");
+                }
+    
+                if (erreurs.length > 0) {
+                    res.render("form-sign.ejs", { erreurs: erreurs });
+                    return;
+                } else {
+                    res.redirect("/connexion");
+                    return;
+                }
+            });
+        });
+        */
+
 
     },
 
