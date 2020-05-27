@@ -82,6 +82,7 @@ let UserController = {
                         if (result == true) {
                             req.session.connected = true;
                             req.session.userData = users[0];
+                            console.log(req.session.userData);
                             res.redirect('/');
                         } else {
                             erreurs.push('Mot de passe incorrect');
@@ -95,6 +96,17 @@ let UserController = {
                 erreurs.push('Erreur lors de la connexion');
                 res.render("connexion.ejs", { erreurs: erreurs });
             });
+    },
+    logout: function(req, res){
+        req.session.destroy(function(error){  
+            if(error){  
+                res.send("500 Server Error !");
+            }  
+            else  
+            {  
+                res.redirect('/connexion');  
+            }  
+        });  
     }
 
 }
