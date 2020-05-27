@@ -15,7 +15,10 @@
             <h2>Bienvenue
                 <%= pseudo %>!
             </h2>
-            <% if (tweets.length != 0) { %>
+            <% if (pseudo_twitter === '') { %>
+                <p><a href="/mon-compte" class="btn btn-info">Lier un compte tweeter</a></p>
+            <%}%>
+            <% if (tweets.length != 0 && pseudo_twitter != '') { %>
                 <p class="lead my-3">Voici vos tweets de la semaine : </p>
                 <div class="row my-3">
 
@@ -35,7 +38,7 @@
                 </div>
                 <% } else { %>
                     <p class="lead my-3">Vous n'avez effectué aucun tweet durant cette semaine !</p>
-                    <% } %>
+                <% } %>
         </div>
         </div>
         <script src="/js/jquery.min.js"></script>

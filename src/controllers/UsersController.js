@@ -100,8 +100,9 @@ let UserController = {
         }
 
         let data = {
-            email: req.session.user.email,
-            pseudo: req.session.user.pseudo
+            email: req.session.userData.email,
+            pseudo: req.session.userData.pseudo,
+            pseudo_twitter: req.session.userData.pseudo_twitter
         }
 
         console.log(data)
@@ -110,6 +111,7 @@ let UserController = {
             if (req.session.hasOwnProperty("previous")) {
                 data.email = req.session.previous.email;
                 data.pseudo = req.session.previous.pseudo;
+                data.pseudo_twitter = req.session.previous.pseudo_twitter;
                 delete req.session.previous;
             }
             delete req.session.errors;
@@ -123,6 +125,7 @@ let UserController = {
         const errors = {
             email: "",
             pseudo: "",
+            pseudo_twitter: "",
             old_password: "",
             password: "",
             conf_password: ""
@@ -131,13 +134,13 @@ let UserController = {
         let update = true;
 
         if (req.body.old_password.length > 0) {
-            if (!bcrypt.compareSync(req.body.old_password, req.session.user.password)) {
+            if (!bcrypt.compareSync(req.body.old_password, req.session.userData.password)) {
                 errors.old_password = "Le mot de passe fourni est invalide"
             }
             if (req.body.password.length == 0) {
                 errors.password = "Vous devez saisir votre nouveau mot de passe"
             }
-            if (req.body.password == req.session.user.password) {
+            if (req.body.password == req.session.userData.password) {
                 errors.password = "Le nouveau mot de passe est identique par rapport à l'ancien"
             } else if (req.body.password != req.body.conf_password)
                 errors.conf_password = "Les deux mots de passe ne correspondent pas"
@@ -153,12 +156,13 @@ let UserController = {
 
         if (update) { //on vérifie qu'il n'y a pas d'erreurs
             const newData = { //on récupère les nouvelles valeurs, sinon on reste avec les valeurs initiales pour la mise à jour (sorte de patch)
-                email: req.body.email.length > 0 ? req.body.email : req.session.user.email,
-                pseudo: req.body.pseudo.length > 0 ? req.body.pseudo : req.session.user.pseudo,
-                password: req.body.password.length > 0 ? req.body.password : req.session.user.password
+                email: req.body.email.length > 0 ? req.body.email : req.session.userData.email,
+                pseudo: req.body.pseudo.length > 0 ? req.body.pseudo : req.session.userData.pseudo,
+                password: req.body.password.length > 0 ? req.body.password : req.session.userData.password,
+                pseudo_twitter: req.body.pseudo_twitter.length > 0 ? req.body.pseudo_twitter : req.session.userData.pseudo_twitter
             }
-            console.log(req.session.user.email)
-            User.findOneAndUpdate({ email: req.session.user.email }, newData, { new: true, runValidators: true, context: "query" }, (err, user) => {
+            console.log(req.session.userData.email)
+            User.findOneAndUpdate({ email: req.session.userData.email }, newData, { new: true, runValidators: true, context: "query" }, (err, user) => {
 
                 if (err != null) {
                     const { pseudo, email } = User.catchErrors(err); //erreurs qui ne peuvent qu'intervenir depuis Mongoose
@@ -172,9 +176,9 @@ let UserController = {
                     req.session.errors = errors;
                     res.redirect("/modifier-mon-compte")
                 } else {
-                    req.session.user.email = newData.email;
-                    req.session.user.pseudo = newData.pseudo;
-                    req.session.user.password = newData.password;
+                    req.session.userData.email = newData.email;
+                    req.session.userData.pseudo = newData.pseudo;
+                    req.session.userData.password = newData.password;
                     req.session.success = "Votre compte a bien été mis à jour !"
                     res.redirect("/mon-compte");
                 }
