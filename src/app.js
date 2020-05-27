@@ -49,6 +49,21 @@ app.get('/', function(req, res) {
         tweets: data
     })
 })
+
+/*Récupère les tweets d'un compte*/
+const fetch = require('node-fetch')
+
+fetch("https://api.twitter.com/1.1/search/tweets.json?q=from:BekoFere", {
+  method: "GET",
+  headers: {
+      "Authorization": "Bearer AAAAAAAAAAAAAAAAAAAAAP6lEgEAAAAAc3Mfbl1MTODEdGxlYVkgvU2VcSk%3DSx5j4qWCgjvDHLcAdzeQ7ZPBYnyWqUBPtQvMvL0QK7mB5f7XJb" 
+  }
+})
+.then(res => res.json())
+    .then(json => console.log(json));
+
+/*Fin de la récupération des tweets */
+
 //Accède à la page inscription
 app.get('/connexion', function(req, res) {
     res.render("connexion.ejs");
@@ -63,6 +78,11 @@ app.get('/mon-compte', function(req, res) {
 })
 app.get('/modifier-mon-compte', function(req, res) {
     res.render("modifier-mon-compte.ejs", { framework: "Bootstrap" })
+})
+
+//Accède à la page inscription
+app.get('/connexion', function(req, res) {
+    res.render("connexion.ejs");
 })
 
 app.listen(3000, function() {

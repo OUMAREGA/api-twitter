@@ -97,6 +97,7 @@ let UserController = {
             });
     },
 
+
     showEdit: (req, res) => {
         let error = {
             email: "",
@@ -191,6 +192,18 @@ let UserController = {
             req.session.errors = errors;
             res.redirect("/modifier-mon-compte");
         }
+    },
+    logout: function(req, res){
+        req.session.destroy(function(error){  
+            if(error){  
+                res.send("500 Server Error !");
+            }  
+            else  
+            {  
+                res.redirect('/connexion');  
+            }  
+        });  
+
     }
 
 }

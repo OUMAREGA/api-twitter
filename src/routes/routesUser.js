@@ -10,7 +10,8 @@ let UserRoutes = function(app)
     let router = express.Router();
 
     router.route('/sign-users')
-        .post(UserController.create);
+    .post(UserController.create);
+
     router.route('/user-connexion')
         .post(UserController.connect);
 
@@ -28,6 +29,9 @@ let UserRoutes = function(app)
         res.render("profile.ejs", { success: success })
     })
 
+
+    router.route('/logout')
+    .post(UserController.logout);
 
     return router;
 }
