@@ -2,6 +2,21 @@ const express = require('express')
 const app = express()
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+
+const userRoutes = require('./routes/routesUser');
+
+var session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+
+mongoose.connect("mongodb://mongo/api_twitter_BDD");
+
+app.use(session({
+    secret: 'P)j5yBV(kShrY{*@',
+    resave: false,
+    saveUninitialized: false,
+    store: new MongoStore({ mongooseConnection: mongoose.connection })
+}));
 
 const bodyParser = require("body-parser");
 
@@ -22,6 +37,10 @@ app.set("views", "views"); //éviter de préciser le chemin de la vue, directeme
 app.use('/bs', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(userRoutes());
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(userRoutes());

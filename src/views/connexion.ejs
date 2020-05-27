@@ -13,21 +13,32 @@
     <div class="container mt-4">
         <div class="row d-flex justify-content-center">
             <div class="col-6">
-                <h1>Connexion</h1><hr>
-                <form>
-                    <fieldset>
+                
+                <% if(typeof(erreurs) !== "undefined") {%>
+                    <ul>
+                        <% erreurs.forEach(function(erreur){ %>
+                        <li class="text-danger"><%= erreur %></li>
+                        <% });%>
+                    </ul>
+                <%}%>
+
+                <h1>Connexion</h1>
+                <hr>
+                <form method="POST" action="/user-connexion">
                     <div class="form-group">
                         <label for="Input1">Email ou pseudo</label>
-                        <input type="text" class="form-control" id="Input1" name="identifiant" placeholder="Saisissez votre email ou pseudo">
+                        <input type="text" class="form-control" id="Input1" name="identifiant"
+                            placeholder="Saisissez votre email ou pseudo">
                     </div>
                     <div class="form-group">
                         <label for="InputPassword">Mot de passe</label>
-                        <input type="password" class="form-control" id="InputPassword" name="password" placeholder="Saisissez votre mot de passe">
+                        <input type="password" class="form-control" id="InputPassword" name="password"
+                            placeholder="Saisissez votre mot de passe">
                     </div>
                     <button type="submit" class="btn btn-primary">Se connecter</button>
                     <a href="/form-sign" class="btn btn-outline-secondary">S'inscrire</a>
-                    </fieldset>
                 </form>
+
             </div>
         </div>
     </div>
