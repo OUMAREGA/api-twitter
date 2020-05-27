@@ -3,6 +3,9 @@ const UserController = require('../controllers/UsersController');
 
 const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
+const middleware = require('../controllers/AuthMiddleware')
+
+
 
 //Routes for User
 let UserRoutes = function(app) 
@@ -17,10 +20,10 @@ let UserRoutes = function(app)
 
 
     router.route("/modifier-mon-compte")
-        .get(UserController.showEdit)
-        .post(UserController.edit)
+        .get([middleware],UserController.showEdit)
+        .post([middleware],UserController.edit)
 
-    router.get('/mon-compte', function(req, res) {
+    router.get('/mon-compte', [middleware], function(req, res) {
         let success = ""; //si la mise à jour a réussi
         if (req.session.hasOwnProperty("success")) {
             success = req.session.success;
@@ -31,7 +34,7 @@ let UserRoutes = function(app)
 
 
     router.route('/logout')
-    .post(UserController.logout);
+    .get(UserController.logout);
 
     return router;
 }
