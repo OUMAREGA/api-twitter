@@ -1,9 +1,7 @@
 const User = require('../models/UserModel');
-const crypto = require('crypto');
-
 const bcrypt = require('bcrypt');
 
-const saltRound = 10;
+const saltRounds = 10;
 
 
 
@@ -33,32 +31,26 @@ let UserController = {
             erreurs.push('Les mots de passe ne correspondent pas.');
         }
 
+        bcrypt.hash(password, saltRounds, function (err, hash) {
+            //Creation de User
+            let user = new User();
+            user.pseudo = userPseudo;
+            user.email = userEmail;
+            user.password = hash;
 
-
-        //Generation d'un Password hash basé sur sha1
-
-        //Creation de User
-
-        let user = new User();
-        user.pseudo = userPseudo;
-        user.email = userEmail;
-        user.password = password; //gérer hashage ensuite
-
-
-        user.save(function (err) {
-
-            if (err) {
-                erreurs.push(err.errors.pseudo.message);
-            }
-
-            if (erreurs.length > 0) {
-                res.render("form-sign.ejs", { erreurs: erreurs });
-                return;
-            } else {
-
-                res.redirect("/connexion");
-                return;
-            }
+            user.save(function (err) {
+                if (err) {
+                    erreurs.push(err.errors.pseudo.message);
+                }
+    
+                if (erreurs.length > 0) {
+                    res.render("form-sign.ejs", { erreurs: erreurs });
+                    return;
+                } else {
+                    res.redirect("/connexion");
+                    return;
+                }
+            });
         });
 
     },
