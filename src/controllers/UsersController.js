@@ -5,7 +5,9 @@ const bcrypt = require('bcrypt');
 
 const saltRound = 10;
 
+const fetch = require('node-fetch')
 
+require('dotenv').config()
 
 //Controller pour User
 let UserController = {
@@ -106,8 +108,18 @@ let UserController = {
                 res.redirect('/connexion');  
             }  
         });  
-    }
+    },
 
+    getUserTweet: function(req, res){
+        
+        fetch("https://api.twitter.com/1.1/search/tweets.json?q=from:BekoFere", {
+        method: "GET",
+        headers: {
+            "Authorization": process.env.TOKEN
+                }
+            }).then(res => res.json())
+                    .then(json => console.log(json));
+                }
 }
 
 module.exports = UserController;
