@@ -95,6 +95,17 @@ let UserController = {
                 erreurs.push('Erreur lors de la connexion');
                 res.render("connexion.ejs", { erreurs: erreurs });
             });
+    },
+    logout: function(req, res){
+        req.session.destroy(function(error){  
+            if(error){  
+                res.send("500 Server Error !");
+            }  
+            else  
+            {  
+                res.redirect('/connexion');  
+            }  
+        });  
     }
 
 }
