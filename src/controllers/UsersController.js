@@ -31,32 +31,6 @@ let UserController = {
             erreurs.push('Les mots de passe ne correspondent pas.');
         }
 
-        const salt = bcrypt.genSaltSync(saltRounds);
-        const hash = bcrypt.hashSync(password, salt);
-
-        //Creation de User
-        let user = new User();
-        user.pseudo = userPseudo;
-        user.email = userEmail;
-        user.password = hash;
-
-        console.log(JSON.stringify(user));
-
-        user.save(function (error) {
-            if (error) {
-                //error.errors.pseudo.message
-                erreurs.push("Erreur lors de la sauvegarde de l'utilisateur");
-            }
-
-            if (erreurs.length > 0) {
-                res.render("form-sign.ejs", { erreurs: erreurs });
-                return;
-            } else {
-                res.redirect("/connexion");
-                return;
-            }
-        });
-        /*
         bcrypt.hash(password, saltRounds, function (err, hash) {
             //Creation de User
             let user = new User();
@@ -66,8 +40,7 @@ let UserController = {
 
             user.save(function (err) {
                 if (err) {
-                    //err.errors.pseudo.message
-                    erreurs.push("Erreur lors du save user");
+                    erreurs.push(err.errors.pseudo.message);
                 }
     
                 if (erreurs.length > 0) {
@@ -79,8 +52,6 @@ let UserController = {
                 }
             });
         });
-        */
-
 
     },
 
