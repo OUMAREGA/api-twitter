@@ -5,24 +5,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Test page</title>
+    <title>Accueil</title>
     <link href="/bs/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <div class="jumbotron">
-        <h1 class="display-4">Hello, world
-            <%= framework %>!
-        </h1>
-        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-        <hr class="my-4">
-        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-        <p class="lead">
-            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-        </p>
-    </div>
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
+    <%- include("Navbar.component.ejs", { page: "Accueil" }) %>
+        <div class="container">
+            <h2>Bienvenue
+                <%= pseudo %>!
+            </h2>
+            <% if (tweets.length != 0) { %>
+                <p class="lead my-3">Voici vos tweets de la semaine : </p>
+                <div class="row my-3">
+
+                    <% tweets.forEach((tweet) => { %>
+                        <div class="card text-white bg-info my-4 mx-2" style="max-width: 20rem;">
+                            <div class="card-header"></div>
+                            <div class="card-body">
+                                <h4 class="card-title">
+                                    <%= tweet.title %>
+                                </h4>
+                                <p class="card-text">
+                                    <%= tweet.text %>
+                                </p>
+                            </div>
+                        </div>
+                        <% }) %>
+                </div>
+                <% } else { %>
+                    <p class="lead my-3">Vous n'avez effectué aucun tweet durant cette semaine !</p>
+                    <% } %>
+        </div>
+        </div>
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
 </body>
 
 </html>

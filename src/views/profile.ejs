@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <title>Mon compte</title>
+        <link href="/bs/bootstrap.min.css" rel="stylesheet">
+    </head>
+   
+    <body>
+        <%- include("Navbar.component.ejs",{ page: "Mon compte" }) %>
+        <div class="container">
+            <span class="h4 ml-2">Informations du compte</span>  
+            <ul class="mt-3" >     
+                <li>
+                    Pseudo : <% if(typeof(pseudo) !== "undefined") {%>
+                        <%= pseudo%>
+                        <%}%>
+                </li>   
+                <li>
+                    Pseudo Twitter : <% if(typeof(pseudo_twitter) !== "undefined") {%>
+                        <%= pseudo_twitter%>
+                        <%}%>
+                </li>     
+                <li>
+                    Email : <% if(typeof(email) !== "undefined") {%>
+                        <%= mail %>
+                        <%}%>
+                </li>     
+            </ul>
+            <a href="/modifier-mon-compte" class="btn btn-outline-secondary">Mettre à jour le profil</a>
+        </div>
+        
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+    </body>
+</html>

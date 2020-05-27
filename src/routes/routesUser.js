@@ -8,7 +8,6 @@ let UserRoutes = function(app)
 
     router.route('/sign-users')
     .post(UserController.create);
-
     router.route('/user-connexion')
     .post(UserController.connect);
 
