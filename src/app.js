@@ -12,7 +12,7 @@ const MongoStore = require('connect-mongo')(session);
 mongoose.connect("mongodb://mongo/api_twitter_BDD");
 
 app.use(session({
-    secret: '',
+    secret: 'P)j5yBV(kShrY{*@',
     resave: false,
     saveUninitialized: false,
     store: new MongoStore({ mongooseConnection: mongoose.connection })

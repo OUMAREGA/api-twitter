@@ -1,5 +1,8 @@
 const User = require('../models/UserModel');
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
+
+const saltRound = 10;
 
 //Controller pour User
 let UserController = {
@@ -67,30 +70,34 @@ let UserController = {
 
         const identifier = req.body.identifiant;
         const password = req.body.password;
-
         const erreurs = [];
 
+        //L'identifiant peut être un pseudo ou email
         User.find().or([{ pseudo: identifier }, { email: identifier }])
-        .then(users => { 
-            if (users.length > 0) {
+            .then(users => {
+                if (users.length === 0) {
+                    erreurs.push('Vérifiez vos identifiants');
+                    res.render("connexion.ejs", { erreurs: erreurs });
+                } else {
 
-                //Generation d'un Password hash basé sur sha1
-                let shasum = crypto.createHash('sha1');
-                shasum.update(password);
-                let passwordHash = shasum.digest('hex');
+                    bcrypt.compare(password, users[0].password, function (err, result) {
 
-                console.log(users);
+                        if (result == true) {
+                            req.session.connected = true;
+                            req.session.userData = users[0];
+                            res.redirect('/');
+                        } else {
+                            erreurs.push('Mot de passe incorrect');
+                            res.render("connexion.ejs", { erreurs: erreurs });
+                        }
+                    });
 
-                console.log(passwordHash);
-                console.log(users[0].password);
-
-                res.send("test");
-            } else {
-                erreurs.push('Vérifiez vos identifiants');
-                res.render("connexion.ejs", {erreurs: erreurs});
-            }
-        })
-        .catch(error => { res.send(error) });
+                }
+            })
+            .catch(error => {
+                erreurs.push('Erreur lors de la connexion');
+                res.render("connexion.ejs", { erreurs: erreurs });
+            });
     }
 
 }
