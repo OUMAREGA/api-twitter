@@ -41,6 +41,7 @@ let UserController = {
                     res.render("form-sign.ejs", { erreurs: erreurs });
                     return;
                 } else {
+                    req.session.success = true;
                     res.redirect("/connexion");
                     return;
                 }
