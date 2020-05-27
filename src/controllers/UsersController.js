@@ -20,12 +20,6 @@ let UserController = {
 
         //Vérifie si l'email existe déjà
 
-        User.find({ 'email': userEmail }, function (err, usr) {
-            if (usr.length > 0) {
-                //Si le mail est déjà utilisé
-                erreurs.push('Cet email est utilisé pour un autre compte');
-            }
-        });
 
         if (password !== repassword) {
             erreurs.push('Les mots de passe ne correspondent pas.');
@@ -40,7 +34,7 @@ let UserController = {
 
             user.save(function (err) {
                 if (err) {
-                    erreurs.push(err.errors.pseudo.message);
+                    Object.values(User.catchErrors(err)).forEach((error) => erreurs.push(error))
                 }
     
                 if (erreurs.length > 0) {
@@ -100,8 +94,8 @@ let UserController = {
         }
 
         let data = {
-            email: req.session.user.email,
-            pseudo: req.session.user.pseudo
+            email: req.session.userData.email,
+            pseudo: req.session.userData.pseudo
         }
 
         console.log(data)
@@ -129,18 +123,18 @@ let UserController = {
         }
 
         let update = true;
-
         if (req.body.old_password.length > 0) {
-            if (!bcrypt.compareSync(req.body.old_password, req.session.user.password)) {
-                errors.old_password = "Le mot de passe fourni est invalide"
-            }
             if (req.body.password.length == 0) {
                 errors.password = "Vous devez saisir votre nouveau mot de passe"
             }
-            if (req.body.password == req.session.user.password) {
-                errors.password = "Le nouveau mot de passe est identique par rapport à l'ancien"
-            } else if (req.body.password != req.body.conf_password)
+            if (req.body.password != req.body.conf_password){
                 errors.conf_password = "Les deux mots de passe ne correspondent pas"
+            }
+            if(!bcrypt.compareSync(req.body.old_password,req.session.userData.password))
+                errors.old_password = "Le mot de passe fourni est invalide"
+            else if(bcrypt.compareSync(req.body.password,req.session.userData.password))
+                errors.password = "Le nouveau mot de passe est identique par rapport à l'ancien"
+
         } else if (req.body.password.length > 0 ||  req.body.conf_password.length > 0) {
             errors.old_password = "Vous devez spécifier votre mot de passe"
         }
@@ -149,18 +143,25 @@ let UserController = {
                 update = false;
                 return;
             }
-        })
-
-        if (update) { //on vérifie qu'il n'y a pas d'erreurs
+        })  
+            console.log(errors)
             const newData = { //on récupère les nouvelles valeurs, sinon on reste avec les valeurs initiales pour la mise à jour (sorte de patch)
-                email: req.body.email.length > 0 ? req.body.email : req.session.user.email,
-                pseudo: req.body.pseudo.length > 0 ? req.body.pseudo : req.session.user.pseudo,
-                password: req.body.password.length > 0 ? req.body.password : req.session.user.password
+                email: req.body.email.length > 0 ? req.body.email : req.session.userData.email,
+                pseudo: req.body.pseudo.length > 0 ? req.body.pseudo : req.session.userData.pseudo,
             }
-            console.log(req.session.user.email)
-            User.findOneAndUpdate({ email: req.session.user.email }, newData, { new: true, runValidators: true, context: "query" }, (err, user) => {
 
-                if (err != null) {
+            if(update) //si aucune autre erreur n'a été trouvée, on peut hasher
+            {
+                    newData.password = bcrypt.hashSync(req.body.password,saltRounds);
+                
+            }else if(req.body.password.length == 0 && req.body.old_password.length == 0){
+                newData.password = req.session.userData.password;
+            }
+            
+            
+            User.findOneAndUpdate({ email: req.session.userData.email }, newData, { new: true, runValidators: true, context: "query" }, (err, user) => {
+
+                if (err != null || !update) {
                     const { pseudo, email } = User.catchErrors(err); //erreurs qui ne peuvent qu'intervenir depuis Mongoose
                     console.log(pseudo, email)
                     errors.email = (email.length == 0) ? "" : email;
@@ -172,18 +173,14 @@ let UserController = {
                     req.session.errors = errors;
                     res.redirect("/modifier-mon-compte")
                 } else {
-                    req.session.user.email = newData.email;
-                    req.session.user.pseudo = newData.pseudo;
-                    req.session.user.password = newData.password;
+                    req.session.userData.email = newData.email;
+                    req.session.userData.pseudo = newData.pseudo;
+                    req.session.userData.password = newData.password;
                     req.session.success = "Votre compte a bien été mis à jour !"
                     res.redirect("/mon-compte");
                 }
             })
 
-        } else {
-            req.session.errors = errors;
-            res.redirect("/modifier-mon-compte");
-        }
     },
     logout: function(req, res){
         req.session.destroy(function(error){  
