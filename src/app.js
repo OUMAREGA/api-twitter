@@ -70,7 +70,14 @@ fetch("https://api.twitter.com/1.1/search/tweets.json?q=from:BekoFere", {
 
 //Accède à la page inscription
 app.get('/connexion', function(req, res) {
-    res.render("connexion.ejs");
+    
+    let subscribeOk = "";
+
+    if(req.session.hasOwnProperty("success")){
+        subscribeOk = req.session.success;
+        delete req.session.success;
+    }
+    res.render("connexion.ejs", { success : subscribeOk });
 })
 
 //Accède à la page connexion
