@@ -72,12 +72,15 @@ app.get('/',[middleware], function(req, res) {
 app.get('/connexion', function(req, res) {
     
     let subscribeOk = "";
-
+    let deleteOk = "";
     if(req.session.hasOwnProperty("success")){
         subscribeOk = req.session.success;
         delete req.session.success;
+    }else if(req.session.hasOwnProperty("deleteSuccess")){
+        deleteOk = req.session.deleteSuccess;
+        delete req.session.deleteSuccess;
     }
-    res.render("connexion.ejs", { success : subscribeOk });
+    res.render("connexion.ejs", { success : subscribeOk, delete_account: deleteOk });
 })
 
 //Accède à la page inscription
