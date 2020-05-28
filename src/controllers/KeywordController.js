@@ -33,6 +33,7 @@ exports.add_keyword = (req, res) => {
                 const usersList = document.users;
                 if (usersList.some(e => e.pseudo === userPseudo)) {
                     //Utilisateur déjà enregistré sur ce mot clé
+                    res.status(409);
                     res.json({ message: "Vous avez déjà enregistré ce mot clé" });
                 } else {
                     const addDate = new Date(Date.now()).toISOString();
@@ -56,7 +57,7 @@ exports.add_keyword = (req, res) => {
 
 exports.get_keywords = (req, res) => {
     //test avec req.body.pseudo
-    const userPseudo = req.body.pseudo;//req.session.userData.pseudo;
+    const userPseudo = req.session.userData.pseudo;
 
     Keyword.find({ "users.pseudo": userPseudo })
         .then(result => {
