@@ -32,34 +32,23 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(userRoutes());
 
-console.log("funct",user.getUserTweet())
 
 app.get('/', function(req, res) {
-
-
-    let data = [];
-     
-    data = user.getUserTweet();
-
-    console.log("data",data);
     
-    data = [{
-            "title": "Mon premier tweet",
-            "text": "Ceci est ma première utilisation de Twiiter"
-        },
-        {
-            "title": "Mon premier tweet",
-            "text": "Ceci est ma première utilisation de Twiiter"
-        }, {
-            "title": "Mon premier tweet",
-            "text": "Ceci est ma première utilisation de Twiiter"
-        }
-    ]
+    let pseudo_twitter = req.session.UserData.pseudo_twitter
+    if(pseudo_twitter){
+        user.getUserTweet(pseudo_twitter).then(data =>
+            {
+                if(data.statuses.length > 0){
+                    res.render("index.ejs", {
+                        pseudo: pseudo_twitter,
+                        tweets: data.statuses
+                    })
+                }
+            })
 
-    res.render("index.ejs", {
-        pseudo: "hello",
-        tweets: data
-    })
+    }
+    
 })
 //Accède à la page inscription
 app.get('/connexion', function(req, res) {

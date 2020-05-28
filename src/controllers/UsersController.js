@@ -7,7 +7,7 @@ const saltRound = 10;
 
 const fetch = require('node-fetch')
 
-require('dotenv').config()
+require('dotenv').config();
 
 //Controller pour User
 let UserController = {
@@ -110,16 +110,19 @@ let UserController = {
         });  
     },
 
-    getUserTweet: function(req, res){
-        
-        fetch("https://api.twitter.com/1.1/search/tweets.json?q=from:BekoFere", {
+     async getUserTweet(pseudo){
+        let response = await fetch("https://api.twitter.com/1.1/search/tweets.json?q=from:"+pseudo, {
         method: "GET",
         headers: {
             "Authorization": process.env.TOKEN
                 }
-            }).then(res => res.json())
-                    .then(json => console.log(json));
-                }
+            })
+        let data = await response.json();
+
+            return data;
+    }
+
+                
 }
 
 module.exports = UserController;
