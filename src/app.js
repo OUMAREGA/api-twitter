@@ -2,11 +2,14 @@ const express = require('express')
 const app = express()
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+
 const bodyParser = require("body-parser");
 
 const userRoutes = require('./routes/routesUser');
+var session = require('express-session')
 
-var session = require('express-session');
+const user = require('./controllers/UsersController')
+
 const MongoStore = require('connect-mongo')(session);
 
 mongoose.connect("mongodb://mongo/api_twitter_BDD");
@@ -19,7 +22,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: new MongoStore({ mongooseConnection: mongoose.connection })
-}));
+}))
+
 
 app.set("view engine", "ejs"); //règle pour associer le moteur de templating de express à ejs
 app.set("views", "views"); //éviter de préciser le chemin de la vue, directement préciser le nom du fichier
@@ -31,42 +35,24 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(userRoutes());
 
-app.get('/',[middleware], function(req, res) {
-    let data = [];
 
-    data = [{
-            "title": "Mon premier tweet",
-            "text": "Ceci est ma première utilisation de Twiiter"
-        },
-        {
-            "title": "Mon premier tweet",
-            "text": "Ceci est ma première utilisation de Twiiter"
-        }, {
-            "title": "Mon premier tweet",
-            "text": "Ceci est ma première utilisation de Twiiter"
-        }
-    ]
+app.get('/', function(req, res) {
+    
+    let pseudo_twitter = req.session.UserData.pseudo_twitter
+    if(pseudo_twitter){
+        user.getUserTweet(pseudo_twitter).then(data =>
+            {
+                if(data.statuses.length > 0){
+                    res.render("index.ejs", {
+                        pseudo: pseudo_twitter,
+                        tweets: data.statuses
+                    })
+                }
+            })
 
-    res.render("index.ejs", {
-        pseudo:  req.session.userData.pseudo,
-        tweets: data,
-        pseudo_twitter: req.session.userData.hasOwnProperty('pseudo_twitter') ?  req.session.userData.pseudo_twitter : ''
-    })
+    }
+    
 })
-
-/*Récupère les tweets d'un compte*/
-/*const fetch = require('node-fetch')
-
-fetch("https://api.twitter.com/1.1/search/tweets.json?q=from:BekoFere", {
-  method: "GET",
-  headers: {
-      "Authorization": "Bearer AAAAAAAAAAAAAAAAAAAAAP6lEgEAAAAAc3Mfbl1MTODEdGxlYVkgvU2VcSk%3DSx5j4qWCgjvDHLcAdzeQ7ZPBYnyWqUBPtQvMvL0QK7mB5f7XJb" 
-  }
-})
-.then(res => res.json())
-    .then(json => console.log(json));*/
-
-/*Fin de la récupération des tweets */
 
 //Accède à la page inscription
 app.get('/connexion', function(req, res) {
