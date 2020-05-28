@@ -16,6 +16,8 @@ mongoose.connect("mongodb://mongo/api_twitter_BDD");
 
 const middleware = require('./controllers/AuthMiddleware')
 
+const statsRoute = require('./routes/routeStatsKeyword')
+
 
 app.use(session({
     secret: 'P)j5yBV(kShrY{*@',
@@ -36,6 +38,7 @@ app.use("/assets", express.static(__dirname + '/public/'))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(userRoutes());
+statsRoute(app);
 
 
 app.get('/',[middleware], function(req, res) {
