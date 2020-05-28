@@ -1,8 +1,7 @@
 const Keyword = require('../models/KeywordModel');
-const User = require('../models/UserModel');
 
 exports.add_keyword = (req, res) => {
-    const word = req.params.word.toLowerCase();
+    const word = req.body.word.toLowerCase();
 
     //test avec req.body.pseudo
     const userPseudo = req.session.userData.pseudo;
@@ -23,7 +22,9 @@ exports.add_keyword = (req, res) => {
                         res.send(err);
                     } else {
                         res.status(201);
-                        res.json({ message: "Mot clé crée" });
+                        keyword = keyword.toObject();
+                        delete keyword.users;
+                        res.json({ keyword });
                     }
                 });
 
@@ -36,15 +37,15 @@ exports.add_keyword = (req, res) => {
                 } else {
                     const addDate = new Date(Date.now()).toISOString();
                     const keywordUserObject = { pseudo: userPseudo, date_ajout: addDate };
-
                     usersList.push(keywordUserObject);
                     document.save(function (err, keyword) {
                         if (err) {
-                            POST
                             res.send(err);
                         } else {
+                            keyword = keyword.toObject();
+                            delete keyword.users;
                             res.status(200);
-                            res.json({ message: "Mot clé ajouté" });
+                            res.json({ keyword });
                         }
                     });
 
@@ -55,14 +56,22 @@ exports.add_keyword = (req, res) => {
 
 exports.get_keywords = (req, res) => {
     //test avec req.body.pseudo
-    const userPseudo = req.session.userData.pseudo;
+    const userPseudo = req.body.pseudo;//req.session.userData.pseudo;
 
     Keyword.find({ "users.pseudo": userPseudo })
         .then(result => {
+            if (result.length === 0) {
+                res.json({message:"Aucun mot clé associé pour cet utilisateur"});
+            }
             let userKeywords = [];
 
             result.forEach(element => {
-                userKeywords.push(element.word);
+                element = element.toObject();
+                let users = element.users;
+                const reqUser = users.find(user => user.pseudo === userPseudo);
+                element.user = reqUser;
+                delete element.users;
+                userKeywords.push(element);
             });
 
             res.json(userKeywords);
@@ -90,6 +99,7 @@ exports.delete_keyword = (req, res) => {
                         if (err) {
                             res.json(err);
                         } else {
+                            res.status(200);
                             res.json({ message: "Mot clé supprimé" });
                         }
                     });
@@ -103,6 +113,31 @@ exports.delete_keyword = (req, res) => {
                         }
                     });
                 }
+            }
+        });
+}
+
+exports.get_a_keyword = (req, res) => {
+    const word = req.params.word.toLowerCase();
+
+    //test avec req.body.pseudo
+    const userPseudo = req.session.userData.pseudo;
+
+    Keyword.find({ "users.pseudo": userPseudo, word: word })
+        .then(result => {
+            if (result.length === 0) {
+                res.json({ message: "Mot clé non trouvé pour cet utilisateur" });
+            } else {
+                result = result[0].toObject();
+
+                const users = result.users;
+                const userData = users.find(user => user.pseudo === userPseudo);
+
+                result.user = userData;
+
+                delete result.users;
+
+                res.json(result);
             }
         });
 }
