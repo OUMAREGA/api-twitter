@@ -31,6 +31,8 @@ app.set("views", "views"); //éviter de préciser le chemin de la vue, directeme
 app.use('/bs', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist'));
+app.use("/chart", express.static(__dirname + '/node_modules/chart.js/dist/'))
+app.use("/assets", express.static(__dirname + '/public/'))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(userRoutes());
@@ -54,7 +56,7 @@ app.get('/', function(req, res) {
     
 })
 
-//Accède à la page inscription
+//Accède à la page connexion
 app.get('/connexion', function(req, res) {
     
     let subscribeOk = "";
@@ -66,16 +68,22 @@ app.get('/connexion', function(req, res) {
     res.render("connexion.ejs", { success : subscribeOk });
 })
 
-//Accède à la page connexion
+//Accède à la page inscription
 app.get('/form-sign', function(req, res) {
     res.render("form-sign.ejs")
 })
 
-app.get('/mon-compte', [middleware], function(req, res) {
-    res.render("profile.ejs")
+app.get("/dashboard",[middleware],(req,res) => {
+
+    const fakeKeywords = ["Covid","IPSSI","Santé","Bekofere"];
+
+    res.render("dashboard.ejs", { keywords: fakeKeywords })
 })
+
+
 app.get('/modifier-mon-compte', [middleware], function(req, res) {
     res.render("modifier-mon-compte.ejs")
+
 })
 
 app.listen(3000, function() {
