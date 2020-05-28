@@ -94,7 +94,6 @@ let UserController = {
             password: "",
             conf_password: "",
             pseudo_twitter: ""
-
         }
 
         let data = {
@@ -145,6 +144,20 @@ let UserController = {
         } else if (req.body.password.length > 0 ||  req.body.conf_password.length > 0) {
             errors.old_password = "Vous devez spécifier votre mot de passe"
         }
+
+        if(req.body.pseudo_twitter.length > 0) {
+                let error_pseudo_twitter = '';
+                fetch("https://api.twitter.com/labs/2/users/by/username/"+req.body.pseudo_twitter, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": process.env.TOKEN
+                    }
+                }).then(res => res.json())
+                    .then((json) => {if(error_pseudo_twitter.errors[0].title === '') {
+                        errors.pseudo_twitter = "ce compte n'existe pas";
+                }});
+        }
+        
         Object.values(errors).forEach((value) => {
             if (value != "") {
                 update = false;

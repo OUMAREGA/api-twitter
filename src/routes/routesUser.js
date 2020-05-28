@@ -29,7 +29,7 @@ let UserRoutes = function(app)
             success = req.session.success;
             delete req.session.success;
         }
-        res.render("profile.ejs", { success: success })
+        res.render("profile.ejs", { success: success, pseudo:  req.session.userData.pseudo, pseudo_twitter: req.session.userData.pseudo_twitter, email: req.session.userData.email})
     })
 
 

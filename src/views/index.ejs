@@ -23,17 +23,13 @@
                     <p class="lead my-3">Voici vos tweets de la semaine : </p>
                     <div class="row my-3">
                         <% tweets.forEach((tweet) => { %>
-                            <div class="card text-white bg-info my-4 mx-2" style="max-width: 20rem;">
-                                <div class="card-header"></div>
+                            <div class="card border-secondary mb-3" style="max-width: 20rem;">
                                 <div class="card-body">
-                                    <h4 class="card-title">
-                                        <%= tweet.title %>
-                                    </h4>
                                     <p class="card-text">
                                         <%= tweet.text %>
                                     </p>
                                 </div>
-                            </div>
+                              </div>
                             <% }) %>
                     </div>
                     <% } else { %>
