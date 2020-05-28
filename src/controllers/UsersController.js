@@ -179,6 +179,7 @@ let UserController = {
                     req.session.userData.email = newData.email;
                     req.session.userData.pseudo = newData.pseudo;
                     req.session.userData.password = newData.password;
+                    req.session.userData.pseudo_twitter = newData.pseudo_twitter;
                     req.session.success = "Votre compte a bien été mis à jour !"
                     res.redirect("/mon-compte");
                 }
