@@ -12,6 +12,7 @@ services:
       - '3000:3000'
     volumes:
       - './src:/home/node/app'
+    env_file: '.env'      
   mongo:
     container_name: api_twitter_mongo
     image: mongo

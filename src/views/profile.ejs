@@ -10,11 +10,11 @@
     <%- include("Navbar.component.ejs",{ page: "Mon compte" }) %>
         <div class="container">
 
-            <% if(success.length > 0) { %>
-                <div class="alert alert-dismissible alert-success">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <%= success %>
-                </div>
+                <% if(success.length > 0) { %>
+                    <div class="alert alert-dismissible alert-success">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <%= success %>
+                    </div>
                 <% } %>
 
                 <span class="h4 ml-2">Informations du compte</span>  

@@ -2,21 +2,28 @@ const express = require('express')
 const app = express()
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+
 const bodyParser = require("body-parser");
 
 const userRoutes = require('./routes/routesUser');
+var session = require('express-session')
 
-var session = require('express-session');
+const user = require('./controllers/UsersController')
+
 const MongoStore = require('connect-mongo')(session);
 
 mongoose.connect("mongodb://mongo/api_twitter_BDD");
+
+const middleware = require('./controllers/AuthMiddleware')
+
 
 app.use(session({
     secret: 'P)j5yBV(kShrY{*@',
     resave: false,
     saveUninitialized: false,
     store: new MongoStore({ mongooseConnection: mongoose.connection })
-}));
+}))
+
 
 app.set("view engine", "ejs"); //règle pour associer le moteur de templating de express à ejs
 app.set("views", "views"); //éviter de préciser le chemin de la vue, directement préciser le nom du fichier
@@ -24,51 +31,71 @@ app.set("views", "views"); //éviter de préciser le chemin de la vue, directeme
 app.use('/bs', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist'));
+app.use("/chart", express.static(__dirname + '/node_modules/chart.js/dist/'))
+app.use("/assets", express.static(__dirname + '/public/'))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(userRoutes());
 
-app.get('/', function(req, res) {
-    let data = [];
 
-    data = [{
-            "title": "Mon premier tweet",
-            "text": "Ceci est ma première utilisation de Twiiter"
-        },
-        {
-            "title": "Mon premier tweet",
-            "text": "Ceci est ma première utilisation de Twiiter"
-        }, {
-            "title": "Mon premier tweet",
-            "text": "Ceci est ma première utilisation de Twiiter"
-        }
-    ]
+app.get('/',[middleware], function(req, res) {
 
-    res.render("index.ejs", {
-        pseudo: "hello",
-        tweets: data
-    })
-});
-
-//Accède à la page inscription
-app.get('/connexion', function(req, res) {
-    res.render("connexion.ejs");
+    let pseudo = req.session.userData.pseudo
+    
+    if(req.session.userData && req.session.userData.pseudo_twitter)
+    {
+        let pseudo_twitter = req.session.userData.pseudo_twitter
+        
+            user.getUserTweet(pseudo_twitter).then(data =>
+                {
+                    if(data.statuses.length > 0){
+                        res.render("index.ejs", {
+                            pseudo: pseudo,
+                            pseudo_twitter: pseudo_twitter,
+                            tweets: data.statuses
+                        })
+                    }
+                })
+    }
+    else
+    {
+        res.render("index.ejs", {
+            pseudo:pseudo,
+            pseudo_twitter:'',
+            tweets: []
+        })
+    }
+    
 })
+
 //Accède à la page connexion
-app.get('/form-sign', function(req, res) {
-    res.render("form-sign.ejs", { framework: "Bootstrap" })
-})
+app.get('/connexion', function(req, res) {
+    
+    let subscribeOk = "";
 
-app.get('/mon-compte', function(req, res) {
-    res.render("profile.ejs", { framework: "Bootstrap" })
-})
-app.get('/modifier-mon-compte', function(req, res) {
-    res.render("modifier-mon-compte.ejs", { framework: "Bootstrap" })
+    if(req.session.hasOwnProperty("success")){
+        subscribeOk = req.session.success;
+        delete req.session.success;
+    }
+    res.render("connexion.ejs", { success : subscribeOk });
 })
 
 //Accède à la page inscription
-app.get('/connexion', function(req, res) {
-    res.render("connexion.ejs");
+app.get('/form-sign', function(req, res) {
+    res.render("form-sign.ejs")
+})
+
+app.get("/dashboard",[middleware],(req,res) => {
+
+    const fakeKeywords = ["Covid","IPSSI","Santé","Bekofere"];
+
+    res.render("dashboard.ejs", { keywords: fakeKeywords })
+})
+
+
+app.get('/modifier-mon-compte', [middleware], function(req, res) {
+    res.render("modifier-mon-compte.ejs")
+
 })
 
 const routesKeyword = require('./routes/routesKeyword');

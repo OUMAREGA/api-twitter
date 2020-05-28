@@ -15,31 +15,34 @@
             <h2>Bienvenue
                 <%= pseudo %>!
             </h2>
-            <% if (tweets.length != 0) { %>
-                <p class="lead my-3">Voici vos tweets de la semaine : </p>
-                <div class="row my-3">
-
-                    <% tweets.forEach((tweet) => { %>
-                        <div class="card text-white bg-info my-4 mx-2" style="max-width: 20rem;">
-                            <div class="card-header"></div>
-                            <div class="card-body">
-                                <h4 class="card-title">
-                                    <%= tweet.title %>
-                                </h4>
-                                <p class="card-text">
-                                    <%= tweet.text %>
-                                </p>
+            <% if (pseudo_twitter === '') { %>
+                <p><a href="/mon-compte" class="btn btn-info">Lier un compte twitter</a></p>
+            <%}%>
+            <% if(pseudo_twitter !== '') { %>
+                <% if (tweets.length != 0) { %>
+                    <p class="lead my-3">Voici vos tweets de la semaine : </p>
+                    <div class="row my-3">
+                        <% tweets.forEach((tweet) => { %>
+                            <div class="card text-white bg-info my-4 mx-2" style="max-width: 20rem;">
+                                <div class="card-header"></div>
+                                <div class="card-body">
+                                    <h4 class="card-title">
+                                        <%= tweet.title %>
+                                    </h4>
+                                    <p class="card-text">
+                                        <%= tweet.text %>
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                        <% }) %>
-                </div>
-                <% } else { %>
-                    <p class="lead my-3">Vous n'avez effectué aucun tweet durant cette semaine !</p>
+                            <% }) %>
+                    </div>
+                    <% } else { %>
+                        <p class="lead my-3">Vous n'avez effectué aucun tweet durant cette semaine !</p>
                     <% } %>
+            <%}%>
         </div>
         </div>
         <script src="/js/jquery.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
 </body>
-
 </html>
