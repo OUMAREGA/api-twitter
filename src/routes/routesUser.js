@@ -36,6 +36,8 @@ let UserRoutes = function(app)
     router.route('/logout')
     .get(UserController.logout);
 
+    router.get("/delete-account", UserController.delete)
+
     return router;
 }
 
