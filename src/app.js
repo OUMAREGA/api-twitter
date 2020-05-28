@@ -36,20 +36,32 @@ app.use(bodyParser.json());
 app.use(userRoutes());
 
 
-app.get('/', function(req, res) {
-    
-    let pseudo_twitter = req.session.UserData.pseudo_twitter
-    if(pseudo_twitter){
-        user.getUserTweet(pseudo_twitter).then(data =>
-            {
-                if(data.statuses.length > 0){
-                    res.render("index.ejs", {
-                        pseudo: pseudo_twitter,
-                        tweets: data.statuses
-                    })
-                }
-            })
+app.get('/',[middleware], function(req, res) {
 
+    let pseudo = req.session.userData.pseudo
+    
+    if(req.session.userData && req.session.userData.pseudo_twitter)
+    {
+        let pseudo_twitter = req.session.userData.pseudo_twitter
+        
+            user.getUserTweet(pseudo_twitter).then(data =>
+                {
+                    if(data.statuses.length > 0){
+                        res.render("index.ejs", {
+                            pseudo: pseudo,
+                            pseudo_twitter: pseudo_twitter,
+                            tweets: data.statuses
+                        })
+                    }
+                })
+    }
+    else
+    {
+        res.render("index.ejs", {
+            pseudo:pseudo,
+            pseudo_twitter:'',
+            tweets: []
+        })
     }
     
 })
