@@ -13,7 +13,7 @@
             <form class="mt-4" method="POST" action="/modifier-mon-compte">
                 <div class="form-group">
                     <label for="Input1">Email</label>
-                    <input type="text" value="<%= user.email %>" class="form-control" id="Input1" name="email">
+                    <input type="text" value="<%= user.email %>" class="form-control <%= error.email != '' ? 'is-invalid' : '' %>" id="Input1" name="email">
                     <small class="text-danger">
                         <%= error.email %>
                     </small>
