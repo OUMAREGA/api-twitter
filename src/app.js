@@ -98,6 +98,9 @@ app.get('/modifier-mon-compte', [middleware], function(req, res) {
 
 })
 
+const routesKeyword = require('./routes/routesKeyword');
+routesKeyword(app);
+
 app.listen(3000, function() {
     console.log('Example app listening on port 3000!')
 })
