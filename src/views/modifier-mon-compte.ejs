@@ -26,6 +26,13 @@
                     </small>
                 </div>
                 <div class="form-group">
+                    <label for="pseudo_twitter">Pseudo Twitter</label>
+                    <input type="text" value="<%= user.pseudo_twitter %>" class="form-control <%= error.pseudo_twitter != '' ? 'is-invalid' : '' %>" id="pseudo_twitter" name="pseudo_twitter">
+                    <small class="text-danger">
+                        <%= error.pseudo_twitter %>
+                    </small>
+                </div>
+                <div class="form-group">
                     <label for="mdp">Ancien mot de passe</label>
                     <input type="password" class="form-control <%= error.old_password != '' ? 'is-invalid' : '' %>" id="mdp" name="old_password" placeholder="Saisissez votre ancien mot de passe">
                     <small class="text-danger">
