@@ -14,6 +14,9 @@ const MongoStore = require('connect-mongo')(session);
 
 mongoose.connect("mongodb://mongo/api_twitter_BDD");
 
+const middleware = require('./controllers/AuthMiddleware')
+
+
 app.use(session({
     secret: 'P)j5yBV(kShrY{*@',
     resave: false,
@@ -50,19 +53,28 @@ app.get('/', function(req, res) {
     }
     
 })
+
 //Accède à la page inscription
 app.get('/connexion', function(req, res) {
-    res.render("connexion.ejs");
+    
+    let subscribeOk = "";
+
+    if(req.session.hasOwnProperty("success")){
+        subscribeOk = req.session.success;
+        delete req.session.success;
+    }
+    res.render("connexion.ejs", { success : subscribeOk });
 })
+
 //Accède à la page connexion
 app.get('/form-sign', function(req, res) {
     res.render("form-sign.ejs", { framework: "Bootstrap" })
 })
 
-app.get('/mon-compte', function(req, res) {
+app.get('/mon-compte', [middleware], function(req, res) {
     res.render("profile.ejs", { framework: "Bootstrap" })
 })
-app.get('/modifier-mon-compte', function(req, res) {
+app.get('/modifier-mon-compte', [middleware], function(req, res) {
     res.render("modifier-mon-compte.ejs", { framework: "Bootstrap" })
 })
 
