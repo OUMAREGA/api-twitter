@@ -48,8 +48,9 @@ app.get('/',[middleware], function(req, res) {
     ]
 
     res.render("index.ejs", {
-        pseudo: "hello",
-        tweets: data
+        pseudo:  req.session.userData.pseudo,
+        tweets: data,
+        pseudo_twitter: req.session.userData.hasOwnProperty('pseudo_twitter') ?  req.session.userData.pseudo_twitter : ''
     })
 })
 
@@ -81,14 +82,14 @@ app.get('/connexion', function(req, res) {
 
 //Accède à la page connexion
 app.get('/form-sign', function(req, res) {
-    res.render("form-sign.ejs", { framework: "Bootstrap" })
+    res.render("form-sign.ejs")
 })
 
 app.get('/mon-compte', [middleware], function(req, res) {
-    res.render("profile.ejs", { framework: "Bootstrap" })
+    res.render("profile.ejs")
 })
 app.get('/modifier-mon-compte', [middleware], function(req, res) {
-    res.render("modifier-mon-compte.ejs", { framework: "Bootstrap" })
+    res.render("modifier-mon-compte.ejs")
 })
 
 app.listen(3000, function() {
