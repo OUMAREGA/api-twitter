@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const uniqueValidator = require('mongoose-beautiful-unique-validation');
+const uniqueValidator = require('mongoose-unique-validator');
 
 
 //Schema de User
@@ -8,7 +8,7 @@ let UserSchema = new Schema({
     pseudo: {
         type: String,
         required: "Un pseudo est requis",
-        unique: "Ce pseudo est déjà utilisé"
+        unique: true
     },
     email: {
         type: String,
@@ -22,7 +22,7 @@ let UserSchema = new Schema({
             },
             message: "Email non conforme"
         },
-        unique: "Cette adresse mail a déjà été utilisé"
+        unique: true
     },
     password: {
         type: String,
@@ -38,10 +38,45 @@ UserSchema.plugin(uniqueValidator)
 
 //Definition du model
 let User;
-if(mongoose.models.User)
+if (mongoose.models.User)
     User = mongoose.model('User');
 else
     User = mongoose.model('User', UserSchema);
 
 //Export du model
 module.exports = User;
+
+module.exports.catchErrors = (errorObject) => {
+    const finalObject = {};
+    Object.assign({}, ["pseudo", "email", "password", "pseudo_twitter"].forEach((attribute) => {
+        if (errorObject !== null && errorObject.errors.hasOwnProperty(attribute) && errorObject.errors[attribute] !== undefined) {
+            if (errorObject.errors[attribute].kind == "unique") {
+                switch (attribute) {
+                    case "pseudo":
+
+                        finalObject[attribute] = "Ce pseudo est déjà utilisé"
+                        break;
+
+                    case "email":
+                        finalObject[attribute] = "Cet email est déjà utilisé"
+                        break;
+                    case "pseudo_twitter":
+
+                        finalObject[attribute] = "Ce pseudo twitter est déjà utilisé"
+                        break;
+
+
+                }
+            } else {
+                finalObject[attribute] = errorObject.errors[attribute].message
+            }
+
+
+        } else {
+            finalObject[attribute] = ''
+        }
+    }));
+
+    return finalObject;
+
+}

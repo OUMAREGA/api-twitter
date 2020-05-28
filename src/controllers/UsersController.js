@@ -1,9 +1,7 @@
 const User = require('../models/UserModel');
-const crypto = require('crypto');
-
 const bcrypt = require('bcrypt');
 
-const saltRound = 10;
+const saltRounds = 10;
 
 const fetch = require('node-fetch')
 
@@ -24,43 +22,32 @@ let UserController = {
 
         //Vérifie si l'email existe déjà
 
-        User.find({ 'email': userEmail }, function (err, usr) {
-            if (usr.length > 0) {
-                //Si le mail est déjà utilisé
-                erreurs.push('Cet email est utilisé pour un autre compte');
-            }
-        });
 
         if (password !== repassword) {
             erreurs.push('Les mots de passe ne correspondent pas.');
         }
 
+        bcrypt.hash(password, saltRounds, function (err, hash) {
+            //Creation de User
+            let user = new User();
+            user.pseudo = userPseudo;
+            user.email = userEmail;
+            user.password = hash;
 
-
-        //Generation d'un Password hash basé sur sha1
-
-        //Creation de User
-
-        let user = new User();
-        user.pseudo = userPseudo;
-        user.email = userEmail;
-        user.password = password; //gérer hashage ensuite
-
-
-        user.save(function (err) {
-
-            if (err) {
-                erreurs.push(err.errors.pseudo.message);
-            }
-
-            if (erreurs.length > 0) {
-                res.render("form-sign.ejs", { erreurs: erreurs });
-                return;
-            } else {
-
-                res.redirect("/connexion");
-                return;
-            }
+            user.save(function (err) {
+                if (err) {
+                    Object.values(User.catchErrors(err)).forEach((error) => erreurs.push(error))
+                }
+    
+                if (erreurs.length > 0) {
+                    res.render("form-sign.ejs", { erreurs: erreurs });
+                    return;
+                } else {
+                    req.session.success = true;
+                    res.redirect("/connexion");
+                    return;
+                }
+            });
         });
 
     },
@@ -98,6 +85,106 @@ let UserController = {
                 res.render("connexion.ejs", { erreurs: erreurs });
             });
     },
+
+
+    showEdit: (req, res) => {
+        let error = {
+            email: "",
+            pseudo: "",
+            old_password: "",
+            password: "",
+            conf_password: ""
+        }
+
+        let data = {
+            email: req.session.userData.email,
+            pseudo: req.session.userData.pseudo
+        }
+
+        console.log(data)
+        if (req.session.hasOwnProperty("errors")) {
+            error = req.session.errors;
+            if (req.session.hasOwnProperty("previous")) {
+                data.email = req.session.previous.email;
+                data.pseudo = req.session.previous.pseudo;
+                delete req.session.previous;
+            }
+            delete req.session.errors;
+
+        }
+        console.log(data)
+        res.render("modifier-mon-compte.ejs", { error, user: data })
+    },
+
+    edit: (req, res) => {
+        const errors = {
+            email: "",
+            pseudo: "",
+            old_password: "",
+            password: "",
+            conf_password: ""
+        }
+
+        let update = true;
+        if (req.body.old_password.length > 0) {
+            if (req.body.password.length == 0) {
+                errors.password = "Vous devez saisir votre nouveau mot de passe"
+            }
+            if (req.body.password != req.body.conf_password){
+                errors.conf_password = "Les deux mots de passe ne correspondent pas"
+            }
+            if(!bcrypt.compareSync(req.body.old_password,req.session.userData.password))
+                errors.old_password = "Le mot de passe fourni est invalide"
+            else if(bcrypt.compareSync(req.body.password,req.session.userData.password))
+                errors.password = "Le nouveau mot de passe est identique par rapport à l'ancien"
+
+        } else if (req.body.password.length > 0 ||  req.body.conf_password.length > 0) {
+            errors.old_password = "Vous devez spécifier votre mot de passe"
+        }
+        Object.values(errors).forEach((value) => {
+            if (value != "") {
+                update = false;
+                return;
+            }
+        })  
+            console.log(errors)
+            const newData = { //on récupère les nouvelles valeurs, sinon on reste avec les valeurs initiales pour la mise à jour (sorte de patch)
+                email: req.body.email.length > 0 ? req.body.email : req.session.userData.email,
+                pseudo: req.body.pseudo.length > 0 ? req.body.pseudo : req.session.userData.pseudo,
+            }
+
+            if(update) //si aucune autre erreur n'a été trouvée, on peut hasher
+            {
+                    newData.password = bcrypt.hashSync(req.body.password,saltRounds);
+                
+            }else if(req.body.password.length == 0 && req.body.old_password.length == 0){
+                newData.password = req.session.userData.password;
+            }
+            
+            
+            User.findOneAndUpdate({ email: req.session.userData.email }, newData, { new: true, runValidators: true, context: "query" }, (err, user) => {
+
+                if (err != null || !update) {
+                    const { pseudo, email } = User.catchErrors(err); //erreurs qui ne peuvent qu'intervenir depuis Mongoose
+                    console.log(pseudo, email)
+                    errors.email = (email.length == 0) ? "" : email;
+                    errors.pseudo = (pseudo.length == 0) ? "" : pseudo;
+                    req.session.previous = {};
+                    req.session.previous["email"] = req.body.email;
+                    req.session.previous["pseudo"] = req.body.pseudo;
+                    console.log(req.session.previous)
+                    req.session.errors = errors;
+                    res.redirect("/modifier-mon-compte")
+                } else {
+                    req.session.userData.email = newData.email;
+                    req.session.userData.pseudo = newData.pseudo;
+                    req.session.userData.password = newData.password;
+                    req.session.success = "Votre compte a bien été mis à jour !"
+                    res.redirect("/mon-compte");
+                }
+            })
+
+    },
     logout: function(req, res){
         req.session.destroy(function(error){  
             if(error){  
@@ -126,4 +213,3 @@ let UserController = {
 }
 
 module.exports = UserController;
-

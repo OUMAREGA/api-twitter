@@ -18,8 +18,9 @@
                             <button type="button" class="close" data-dismiss="alert">&times;</button>
                             <ul>
                         <% erreurs.forEach(function(erreur){ %>
-                        
+                                <% if(erreur.length > 0) { %>    
                                 <li class="text-black"><%= erreur %></li>
+                                <% } %>
                         
                         <% });%>
                     </ul>    
@@ -45,8 +46,8 @@
                         <label class="col-form-label" for="inputPasswordC">Confirmation du mot de passe</label>
                         <input type="password" class="form-control" id="inputPasswordC" name="inputPasswordC" placeholder="mot de passe" required>
                     </div>
-                    <input type="submit" class="btn btn-primary" value="s'inscrire">
-                    <a class="ml-4 btn btn-outline-secondary" href="/connexion">se connecter</a>
+                    <input type="submit" class="btn btn-primary" value="S'inscrire">
+                    <a class="ml-4 btn btn-outline-secondary" href="/connexion">Se connecter</a>
                 </form>
             </div>
         </div>
