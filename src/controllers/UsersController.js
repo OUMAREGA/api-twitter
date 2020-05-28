@@ -96,7 +96,9 @@ let UserController = {
             pseudo: "",
             old_password: "",
             password: "",
-            conf_password: ""
+            conf_password: "",
+            pseudo_twitter: ""
+
         }
 
         let data = {
@@ -165,13 +167,15 @@ let UserController = {
             User.findOneAndUpdate({ email: req.session.userData.email }, newData, { new: true, runValidators: true, context: "query" }, (err, user) => {
 
                 if (err != null) {
-                    const { pseudo, email } = User.catchErrors(err); //erreurs qui ne peuvent qu'intervenir depuis Mongoose
+                    const { pseudo, email, pseudo_twitter } = User.catchErrors(err); //erreurs qui ne peuvent qu'intervenir depuis Mongoose
                     console.log(pseudo, email)
                     errors.email = (email.length == 0) ? "" : email;
                     errors.pseudo = (pseudo.length == 0) ? "" : pseudo;
+                    errors.pseudo_twitter = (pseudo_twitter.length == 0) ? "" : pseudo_twitter;
                     req.session.previous = {};
                     req.session.previous["email"] = req.body.email;
                     req.session.previous["pseudo"] = req.body.pseudo;
+                    req.session.previous["pseudo_twitter"] = req.body.pseudo_twitter;
                     console.log(req.session.previous)
                     req.session.errors = errors;
                     res.redirect("/modifier-mon-compte")
