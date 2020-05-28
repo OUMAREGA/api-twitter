@@ -5,7 +5,6 @@ const saltRounds = 10;
 
 const fetch = require('node-fetch')
 
-require('dotenv').config();
 
 //Controller pour User
 let UserController = {
