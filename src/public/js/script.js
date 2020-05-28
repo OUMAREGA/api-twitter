@@ -1,9 +1,6 @@
 $(function() {
 
-    const info = "#138496";
-    const success = "#218838";
-    const warning = "#e0a800";
-    const danger = "#dc3545";
+    let callback = function(){};
 
     if ($("#keywords").val() == -1)
         $("#actions .dynamic").css("display", "none")
@@ -18,17 +15,28 @@ $(function() {
     })
     
     $("#addKeyword").click(function(event){
+        
+        callback = function(){
+            console.log("ajout keyword")
+        }
+
         $("#addText").css("display","block")
         $("#modalAction .modal-header").addClass("bg-info")
         $("#modalAction #modalTitle").text("Ajouter un keyword")
         $("#modalAction .modal-footer button:eq(0)")
         .removeClass("btn-warning")
         .removeClass("btn-danger")
-        .addClass("btn-info").text("Soumettre ajout")
+        .addClass("btn-info").text("Ajouter")
     });
 
 
     $("#deleteKeyword").click(function(event){
+        
+        callback = function(){
+            console.log("suppression keyword")
+        }
+
+        $("#keywordName").text($("#keywords").val())
         $("#deleteText").css("display","block")
         $("#modalAction .modal-header").addClass("bg-danger")
         $("#modalAction #modalTitle").text("Supprimer un keyword")
@@ -39,11 +47,18 @@ $(function() {
         .text("Confirmer")
     });
 
-    $("#modalAction").on("hide.bs.modal",function(e){
+    $("#modalAction").on("hidden.bs.modal",function(e){
         $(".modal-header",this).removeClass("bg-info")
             .removeClass("bg-warning")
             .removeClass("bg-danger")
         $("#addText, #deleteText").css("display","none")    
+    })
+
+    //préciser l'action des différents boutons :
+
+    
+    $("#confirmAction").click(function(){
+        callback();
     })
 
     renderChart();

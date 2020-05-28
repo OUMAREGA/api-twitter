@@ -86,7 +86,7 @@ app.get("/dashboard",(req,res) => {
 
     const fakeKeywords = ["Covid","IPSSI","Santé","Bekofere"];
 
-    res.render("dashboard.ejs", { keywords: fakeKeywords, html: "<h1>Hello world</h1>" })
+    res.render("dashboard.ejs", { keywords: fakeKeywords })
 })
 
 //Accède à la page inscription
