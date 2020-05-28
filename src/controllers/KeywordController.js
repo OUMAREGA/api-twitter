@@ -55,7 +55,7 @@ exports.add_keyword = (req, res) => {
 
 exports.get_keywords = (req, res) => {
     //test avec req.body.pseudo
-    const userPseudo = req.body.pseudo;//req.session.userData.pseudo;
+    const userPseudo = req.session.userData.pseudo;
 
     Keyword.find({ "users.pseudo": userPseudo })
         .then(result => {
@@ -73,7 +73,7 @@ exports.delete_keyword = (req, res) => {
     const word = req.params.word.toLowerCase();
 
     //test avec req.body.pseudo
-    const userPseudo = req.body.pseudo;//req.session.userData.pseudo;
+    const userPseudo = req.session.userData.pseudo;
 
     Keyword.findOne({ word: word, "users.pseudo": userPseudo })
         .then(result => {
