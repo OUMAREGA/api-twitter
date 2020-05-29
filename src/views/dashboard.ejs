@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Dashboard</title>
     <link href="/bs/bootstrap.min.css" rel="stylesheet">
+    <link href="/chart/Chart.min.css" rel="stylesheet">
     <style>
         #actions .dynamic{
             display: none;
@@ -40,9 +41,10 @@
             </div>
 
             <!-- chart js -->
-
-            <canvas id="myChart" class="my-4" width="400" height="200"></canvas>
-
+            <div class="chart-container" style="position: relative; height:55vh; width:60vw">
+                <canvas id="myChart" class="my-4"></canvas>
+            </div>    
+            
             <div class="modal fade" id="modalAction" tabindex="-1" role="dialog" aria-labelledby="modalAction" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -73,7 +75,7 @@
 
         <script src="/js/jquery.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
-        <script src="/chart/Chart.js"></script>
+        <script src="/chart/Chart.min.js"></script>
         <script src="/assets/js/script.js"></script>
 
 </body>
