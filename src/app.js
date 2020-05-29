@@ -64,13 +64,9 @@ app.get('/',[middleware], function(req, res) {
 })
 
 //gestion du cron
-var task = cron.schedule('* 1 * * *', () =>  {
+cron.schedule('* * * * *', () =>  {
   console.log('Yoyo senior');
-}, {
-  scheduled: false
 });
- 
-task.start();
 
 //Accède à la page connexion
 app.get('/connexion', function(req, res) {
