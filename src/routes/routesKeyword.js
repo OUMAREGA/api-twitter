@@ -1,12 +1,13 @@
 const keywordController = require('../controllers/KeywordController');
+const APImiddleware = require('../controllers/APIMiddleware');
 
 module.exports = (app) => {
     app.route('/keywords/:word')
-    .delete(keywordController.delete_keyword)
-    .get(keywordController.get_a_keyword);
+    .delete([APImiddleware], keywordController.delete_keyword)
+    .get([APImiddleware], keywordController.get_a_keyword);
 
     app.route('/keywords')
-    .get(keywordController.get_keywords)
-    .post(keywordController.add_keyword)
+    .get([APImiddleware], keywordController.get_keywords)
+    .post([APImiddleware], keywordController.add_keyword);
     
 };
