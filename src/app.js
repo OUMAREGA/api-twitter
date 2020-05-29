@@ -2,12 +2,12 @@ const express = require('express');
 const app = express();
 const ejs = require("ejs");
 const mongoose = require("mongoose");
-const cron = require("node-cron");
 const bodyParser = require("body-parser");
 const userRoutes = require('./routes/routesUser');
 const session = require('express-session');
 const user = require('./controllers/UsersController');
 const MongoStore = require('connect-mongo')(session);
+const CronStoreStats =  require('./controllers/CronStoreStats')
 
 mongoose.connect("mongodb://mongo/api_twitter_BDD");
 
@@ -64,9 +64,7 @@ app.get('/',[middleware], function(req, res) {
 })
 
 //gestion du cron
-cron.schedule('* * * * *', () =>  {
-  console.log('Yoyo senior');
-});
+CronStoreStats.store();
 
 //Accède à la page connexion
 app.get('/connexion', function(req, res) {
