@@ -155,9 +155,12 @@ let UserController = {
             }).then(res => res.json())
                 .then((json) => {
                     console.log(json)
-                    if (json.hasOwnProperty("errors") && json.errors[0].title === 'Not Found Error') {
-                        errors.pseudo_twitter = "Ce compte Twitter n'existe pas";
+                    if (json.hasOwnProperty("errors")){
+                        if (json.errors[0].title === 'Not Found Error') 
+                            errors.pseudo_twitter = "Ce compte Twitter n'existe pas";  
                     }
+                    if(json.title === 'Invalid Request')
+                        errors.pseudo_twitter = "Format donné invalide ^[A-Za-z0-9_]{1,15}$"  
                     
                     checkForm(req,res,errors,update);
 
