@@ -13,27 +13,23 @@
     <%- include("Navbar.component.ejs", { page: "Accueil" }) %>
         <div class="container">
             <h2>Bienvenue
-                <%= pseudo %>!
+                <%= pseudo %> !
             </h2>
             <% if (pseudo_twitter === '') { %>
-                <p><a href="/mon-compte" class="btn btn-info">Lier un compte twitter</a></p>
+                <p><a href="/modifier-mon-compte" class="btn btn-info my-3">Lier un compte twitter</a></p>
             <%}%>
             <% if(pseudo_twitter !== '') { %>
                 <% if (tweets.length != 0) { %>
                     <p class="lead my-3">Voici vos tweets de la semaine : </p>
                     <div class="row my-3">
                         <% tweets.forEach((tweet) => { %>
-                            <div class="card text-white bg-info my-4 mx-2" style="max-width: 20rem;">
-                                <div class="card-header"></div>
+                            <div class="card border-secondary m-3" style="max-width: 20rem;">
                                 <div class="card-body">
-                                    <h4 class="card-title">
-                                        <%= tweet.title %>
-                                    </h4>
                                     <p class="card-text">
                                         <%= tweet.text %>
                                     </p>
                                 </div>
-                            </div>
+                              </div>
                             <% }) %>
                     </div>
                     <% } else { %>

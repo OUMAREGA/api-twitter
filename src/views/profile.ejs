@@ -27,11 +27,13 @@
                     <li>
                         Pseudo Twitter : <% if(typeof(pseudo_twitter) !== "undefined") {%>
                             <%= pseudo_twitter%>
+                            <%} else { %>
+                              <strong>Aucun compte Twitter associé</strong>  
                             <%}%>
                     </li>     
                     <li>
                         Email : <% if(typeof(email) !== "undefined") {%>
-                            <%= mail %>
+                            <%= email %>
                             <%}%>
                     </li>     
                 </ul>
