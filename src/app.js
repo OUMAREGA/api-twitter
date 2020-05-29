@@ -1,23 +1,18 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
 const ejs = require("ejs");
 const mongoose = require("mongoose");
-
 const bodyParser = require("body-parser");
-
 const userRoutes = require('./routes/routesUser');
-var session = require('express-session')
-
-const user = require('./controllers/UsersController')
-
+const session = require('express-session');
+const user = require('./controllers/UsersController');
 const MongoStore = require('connect-mongo')(session);
+const CronStoreStats =  require('./CronStoreStats')
 
 mongoose.connect("mongodb://mongo/api_twitter_BDD");
 
-const middleware = require('./controllers/AuthMiddleware')
-
-const statsRoute = require('./routes/routeStatsKeyword')
-
+const middleware = require('./controllers/AuthMiddleware');
+const statsRoute = require('./routes/routeStatsKeyword');
 
 app.use(session({
     secret: 'P)j5yBV(kShrY{*@',
@@ -26,10 +21,8 @@ app.use(session({
     store: new MongoStore({ mongooseConnection: mongoose.connection })
 }))
 
-
 app.set("view engine", "ejs"); //règle pour associer le moteur de templating de express à ejs
 app.set("views", "views"); //éviter de préciser le chemin de la vue, directement préciser le nom du fichier
-
 app.use('/bs', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist'));
@@ -39,7 +32,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(userRoutes());
 statsRoute(app);
-
 
 app.get('/',[middleware], function(req, res) {
 
@@ -71,6 +63,9 @@ app.get('/',[middleware], function(req, res) {
     
 })
 
+//gestion du cron
+CronStoreStats.store();
+
 //Accède à la page connexion
 app.get('/connexion', function(req, res) {
     
@@ -97,7 +92,6 @@ app.get("/dashboard",[middleware],(req,res) => {
 
     res.render("dashboard.ejs", { keywords: fakeKeywords })
 })
-
 
 app.get('/modifier-mon-compte', [middleware], function(req, res) {
     res.render("modifier-mon-compte.ejs")
