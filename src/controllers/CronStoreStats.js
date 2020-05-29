@@ -1,7 +1,7 @@
 const cron = require("node-cron");
 
 exports.store = () => { 
-    cron.schedule('* * * * *', () =>  {
+    cron.schedule('*/10 * * * *', () =>  {
         console.log('Yoyo senior');
       });
 };
