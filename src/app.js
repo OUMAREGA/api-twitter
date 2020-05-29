@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+const cron = require("node-cron");
 
 const bodyParser = require("body-parser");
 
@@ -70,6 +71,9 @@ app.get('/',[middleware], function(req, res) {
     }
     
 })
+
+//gestion du cron
+cron.schedule("* 1 * * *", function () {console.log("Yo senior");});
 
 //Accède à la page connexion
 app.get('/connexion', function(req, res) {
