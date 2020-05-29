@@ -7,7 +7,7 @@ const userRoutes = require('./routes/routesUser');
 const session = require('express-session');
 const user = require('./controllers/UsersController');
 const MongoStore = require('connect-mongo')(session);
-const CronStoreStats =  require('./controllers/CronStoreStats')
+const CronStoreStats =  require('./CronStoreStats')
 
 mongoose.connect("mongodb://mongo/api_twitter_BDD");
 
