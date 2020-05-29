@@ -31,6 +31,14 @@
                         Connectez-vous pour utiliser nos services !
                     </div>
                 <% } %>
+
+                <% if(typeof(delete_account) !== "undefined" && delete_account) { %>
+                    <div class="alert alert-dismissible alert-success">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        Votre compte a bien été supprimé.<br>
+                        Nous espérons que vous avez apprécié d'avoir utilisé nos services !
+                    </div>
+                <% } %>
                 <h1>Connexion</h1>
                 <hr>
                 <form method="POST" action="/user-connexion">

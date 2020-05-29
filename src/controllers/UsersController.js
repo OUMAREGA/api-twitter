@@ -1,6 +1,5 @@
 const User = require('../models/UserModel');
 const bcrypt = require('bcrypt');
-
 const saltRounds = 10;
 
 const fetch = require('node-fetch')
@@ -189,7 +188,17 @@ let UserController = {
         })
         let data = await response.json();
 
-        return data;
+
+            return data;
+    },
+
+    delete: (req,res) => {
+        User.findOneAndDelete({ pseudo: req.session.userData.pseudo },(err,data) => {
+            if(!err){
+                req.session.deleteSuccess = true;
+                res.redirect("/connexion");
+            }
+        })
     }
 }
 
