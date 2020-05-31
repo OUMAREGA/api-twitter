@@ -2,6 +2,8 @@ $(function() {
 
     let callback = function(){};
 
+    getKeywords();
+
     if ($("#keywords").val() == -1)
         $("#actions .dynamic").css("display", "none")
     else
@@ -64,7 +66,28 @@ $(function() {
     renderChart();
 })
 
+function getKeywords() 
+{
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', "/keywords", true);
 
+    xhr.onload = function () {
+        const keywords = JSON.parse(xhr.responseText);
+        if (xhr.readyState == 4 && xhr.status == "200") {
+            console.log(keywords);
+            const keywordsList = document.getElementById("keywords");
+            keywords.forEach(element => {
+                const newOption = document.createElement("option");
+                newOption.text = element.word;
+                newOption.value = element.user.date_ajout;
+                keywordsList.add(newOption);
+            });
+        } else {
+            console.error(keywords);
+        }
+    }
+    xhr.send(null);
+}
 
 
 function renderChart()
