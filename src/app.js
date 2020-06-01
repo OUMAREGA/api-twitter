@@ -45,7 +45,7 @@ app.get('/',[middleware], function(req, res) {
         
             user.getUserTweet(pseudo_twitter).then(data =>
                 {
-                    if(data.statuses.length > 0){
+                    if(data.statuses){
                         res.render("index.ejs", {
                             pseudo: pseudo,
                             pseudo_twitter: pseudo_twitter,

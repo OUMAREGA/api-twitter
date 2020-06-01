@@ -16,26 +16,25 @@
                 <%= pseudo %> !
             </h2>
             <% if (pseudo_twitter === '') { %>
-                <p><a href="/modifier-mon-compte" class="btn btn-info my-3">Lier un compte twitter</a></p>
+                <p><a href="/mon-compte" class="btn btn-info">Lier un compte twitter</a></p>
             <%}%>
-            <% if(pseudo_twitter !== '') { %>
-                <% if (tweets.length != 0) { %>
-                    <p class="lead my-3">Voici vos tweets de la semaine : </p>
-                    <div class="row my-3">
-                        <% tweets.forEach((tweet) => { %>
-                            <div class="card border-secondary m-3" style="max-width: 20rem;">
-                                <div class="card-body">
-                                    <p class="card-text">
-                                        <%= tweet.text %>
-                                    </p>
+            <% if (tweets.length > 0 && pseudo_twitter !== '') { %>
+                        <p class="lead my-3">Voici vos tweets de la semaine : </p>
+                        <div class="row my-3">
+                            <% tweets.forEach((tweet) => { %>
+                                <div class="card border-secondary mb-3" style="max-width: 20rem;">
+                                    <div class="card-body">
+                                        <p class="card-text"> 
+                                            <%= tweet.text %>
+                                        </p>
+                                    </div>
                                 </div>
-                              </div>
-                            <% }) %>
-                    </div>
-                    <% } else { %>
-                        <p class="lead my-3">Vous n'avez effectué aucun tweet durant cette semaine !</p>
-                    <% } %>
-            <%}%>
+                                <% }) %>
+                        </div>
+            <% } %>
+            <% if (pseudo_twitter !== '' && tweets.length === 0) { %>
+                <p class="lead my-3">Vous n'avez effectué aucun tweet durant cette semaine !</p>
+            <% } %>  
         </div>
         </div>
         <script src="/js/jquery.min.js"></script>
