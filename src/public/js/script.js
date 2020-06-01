@@ -19,7 +19,26 @@ $(function () {
     $("#addKeyword").click(function (event) {
 
         callback = function () {
-            console.log("ajout keyword")
+            const newKeyword = $("#newKeywordInput").val();
+            const url = "/keywords";
+
+            const data = {};
+            data.word = newKeyword;
+            const json = JSON.stringify(data);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            xhr.onload = function () {
+                const response = xhr.responseText;
+                if (xhr.readyState == 4 && xhr.status == "201") {
+                    //Refresh page
+                    document.location.reload(true);
+                } else {
+                    console.error(response);
+                }
+            }
+            xhr.send(json);
         }
 
         $("#addText").css("display", "block")
@@ -91,17 +110,19 @@ function getKeywords() {
 
     xhr.onload = function () {
         const keywords = JSON.parse(xhr.responseText);
-        if (xhr.readyState == 4 && xhr.status == "200") {
-            console.log(keywords);
-            const keywordsList = document.getElementById("keywords");
-            keywords.forEach(element => {
-                const newOption = document.createElement("option");
-                newOption.text = element.word;
-                newOption.value = element.user.date_ajout;
-                keywordsList.add(newOption);
-            });
-        } else {
-            console.error(keywords);
+        if (!keywords.message) {
+            if (xhr.readyState == 4 && xhr.status == "200") {
+                console.log(keywords);
+                const keywordsList = document.getElementById("keywords");
+                keywords.forEach(element => {
+                    const newOption = document.createElement("option");
+                    newOption.text = element.word;
+                    newOption.value = element.user.date_ajout;
+                    keywordsList.add(newOption);
+                });
+            } else {
+                console.error(keywords);
+            }
         }
     }
     xhr.send(null);
