@@ -1,8 +1,10 @@
 ---
-Fonctionnalité: Feature name only
-Titre: Bug name
+name: Bug
+title: Resolve Bug
+about: Use Template for bug
+labels: ":bug: bug"
 ---
 
-### Description
+## Description du bug
 
-Décrire le bug qui a été corrigé
+* Version utilisée :
