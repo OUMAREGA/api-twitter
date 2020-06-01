@@ -3,23 +3,20 @@ const User = require('../models/UserModel');*/
 
 const Stats = require('../models/StatsKeywordModel')
 
-exports.create_keyword_stat = (req, res) => {
+exports.create_keyword_stat = (req) => {
             try {
                 let newStats = new Stats(req.body)
 
                 newStats.save((error, stats) => {
                     if (error) {
-                        res.status(400);
-                        res.json({ message: error });
+                        return error;
                     }
                     else {
-                        res.status(201);
-                        res.json(stats)
+                       return stats;
                     }
                 })
             } catch (e) {
-                res.status(500);
-                res.json({ message: "Erreur serveur" })
+                return e;
             }
 }
 
