@@ -29,9 +29,11 @@
                 <div class="row">
                     <select class="form-control col-3 my-2 ml-3 mr-4" id="keywords">
                 <option value="-1">------------</option>
+            <!--
             <% keywords.forEach(word => { %>
                 <option value="<%= word %>"><%= word %></option>
-            <% }) %>    
+            <% }) %>
+            -->    
         </select>
                     <div class="col-md-4 col-12 pl-0 mt-md-2" id="actions">
                         <button class="modal-btn btn btn-info" id="addKeyword" data-toggle="modal" data-target="#modalAction">Ajouter</button>
@@ -56,7 +58,8 @@
                 </div>
                 <div class="modal-body">
                     <div id="addText">
-                        <input type="text" class="form-control" placeholder="Nouveau keyword" aria-label="Terme du nouveau keyword" aria-describedby="newKeyword">
+                        <input type="text" class="form-control" id="newKeywordInput" placeholder="Nouveau keyword" aria-label="Terme du nouveau keyword" aria-describedby="newKeyword">
+                        <small class="text-danger mt-1" id="addTextError"></small>
                     </div>
                     <div id="deleteText">
                         <p>Vous vous apprêtez à supprimer le keyword <span class="font-weight-bold" id="keywordName"></span></p>
