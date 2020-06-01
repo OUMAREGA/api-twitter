@@ -30,13 +30,13 @@ $(function () {
             xhr.open("POST", url, true);
             xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
             xhr.onload = function () {
-                const response = xhr.responseText;
+                const response = JSON.parse(xhr.responseText);
                 if ((xhr.readyState == 4 && xhr.status == "201") ||
                     (xhr.readyState == 4 && xhr.status == "200")) {
                     //Refresh page
                     document.location.reload(true);
                 } else {
-                    console.error(response);
+                    $("#addTextError").text(response.message);
                 }
             }
             xhr.send(json);
@@ -113,7 +113,6 @@ function getKeywords() {
         const keywords = JSON.parse(xhr.responseText);
         if (!keywords.message) {
             if (xhr.readyState == 4 && xhr.status == "200") {
-                console.log(keywords);
                 const keywordsList = document.getElementById("keywords");
                 keywords.forEach(element => {
                     const newOption = document.createElement("option");
