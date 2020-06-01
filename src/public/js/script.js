@@ -1,5 +1,7 @@
 $(function() {
 
+    let chart = null;
+
     let callback = function(){};
 
     if ($("#keywords").val() == -1)
@@ -10,8 +12,21 @@ $(function() {
     $("#keywords").change(function() {
         if ($(this).val() == -1)
             $("#actions .dynamic").css("display", "none")
-        else
+        else {
             $("#actions .dynamic").css("display", "inline")
+            fetchStats($(this).val()).done(function(data){
+                
+                const labels = data.map(function(stat){
+                    return stat.date;
+                });
+
+                data = data.map(function(stat){
+                    return stat.nb_tweets
+                });
+                console.log(data);
+                renderChart(chart,labels,data)
+            })
+        }
     })
     
     $("#addKeyword").click(function(event){
@@ -61,34 +76,63 @@ $(function() {
         callback();
     })
 
-    renderChart();
+
+
+    
 })
 
 
+function fetchStats(word)
+{
+    return $.ajax({
+        method: "GET",
+        url: "/stats/"+word
+    })
+}
 
-
-function renderChart()
+function renderChart(chart,labels,data)
 {
     const ctx = document.getElementById("myChart")
-    const myChart = new Chart(ctx, {
+    chart = new Chart(ctx, {
         type: 'line',
         data: {
+            labels: labels,
             datasets: [{
+                data: data,
                 label: 'Nombre de tweets',
-                data: [12, 19, 3, 5, 2, 3],
                 backgroundColor: ["#8fe7ff"],
                 borderColor: ["#0ba9d4"],
                 borderWidth: 2 
             }]
         },
         options: {
+            tooltips:{
+                backgroundColor: "#242d4f",
+                
+                callbacks:{
+                    title: (item,data) => {
+                        return new Date(item[0].xLabel).toLocaleString('fr-FR')
+                    }
+                }
+            },
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true
+                        beginAtZero: false
+                    }
+                }],
+                xAxes: [{
+                    ticks:{
+                        callback: function(value){
+                            return new Date(value).toLocaleString('fr-FR')
+                        }
                     }
                 }]
+            },
+            animation:{
+                duration: 0
             }
         }
+
     });
 }
