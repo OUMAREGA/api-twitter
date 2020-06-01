@@ -180,7 +180,7 @@ let UserController = {
     },
 
     async getUserTweet(pseudo) {
-        let response = await fetch("https://api.twitter.com/1.1/search/tweets.json?q=from:" + pseudo, {
+        let response = await fetch("https://api.twitter.com/1.1/search/tweets.json?q=from:" + pseudo+"&tweet_mode=extended", {
             method: "GET",
             headers: {
                 "Authorization": process.env.TOKEN

@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Dashboard</title>
     <link href="/bs/bootstrap.min.css" rel="stylesheet">
+    <link href="/chart/Chart.min.css" rel="stylesheet">
     <style>
         #actions .dynamic{
             display: none;
@@ -28,9 +29,11 @@
                 <div class="row">
                     <select class="form-control col-3 my-2 ml-3 mr-4" id="keywords">
                 <option value="-1">------------</option>
+            <!--
             <% keywords.forEach(word => { %>
                 <option value="<%= word %>"><%= word %></option>
-            <% }) %>    
+            <% }) %>
+            -->    
         </select>
                     <div class="col-md-4 col-12 pl-0 mt-md-2" id="actions">
                         <button class="modal-btn btn btn-info" id="addKeyword" data-toggle="modal" data-target="#modalAction">Ajouter</button>
@@ -40,9 +43,10 @@
             </div>
 
             <!-- chart js -->
-
-            <canvas id="myChart" class="my-4" width="400" height="200"></canvas>
-
+            <div class="chart-container" style="position: relative; height:55vh; width:60vw">
+                <canvas id="myChart" class="my-4"></canvas>
+            </div>    
+            
             <div class="modal fade" id="modalAction" tabindex="-1" role="dialog" aria-labelledby="modalAction" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -54,7 +58,8 @@
                 </div>
                 <div class="modal-body">
                     <div id="addText">
-                        <input type="text" class="form-control" placeholder="Nouveau keyword" aria-label="Terme du nouveau keyword" aria-describedby="newKeyword">
+                        <input type="text" class="form-control" id="newKeywordInput" placeholder="Nouveau keyword" aria-label="Terme du nouveau keyword" aria-describedby="newKeyword">
+                        <small class="text-danger mt-1" id="addTextError"></small>
                     </div>
                     <div id="deleteText">
                         <p>Vous vous apprêtez à supprimer le keyword <span class="font-weight-bold" id="keywordName"></span></p>
@@ -73,7 +78,7 @@
 
         <script src="/js/jquery.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
-        <script src="/chart/Chart.js"></script>
+        <script src="/chart/Chart.min.js"></script>
         <script src="/assets/js/script.js"></script>
 
 </body>
