@@ -7,7 +7,9 @@ const userRoutes = require('./routes/routesUser');
 const session = require('express-session');
 const user = require('./controllers/UsersController');
 const MongoStore = require('connect-mongo')(session);
-const CronStoreStats =  require('./CronStoreStats')
+const CronStoreStats =  require('./CronStoreStats');
+const https = require('https');
+const fs = require('fs');
 
 mongoose.connect("mongodb://mongo/api_twitter_BDD");
 
@@ -43,7 +45,7 @@ app.get('/',[middleware], function(req, res) {
         
             user.getUserTweet(pseudo_twitter).then(data =>
                 {
-                    if(data.statuses.length > 0){
+                    if(data.statuses){
                         res.render("index.ejs", {
                             pseudo: pseudo,
                             pseudo_twitter: pseudo_twitter,
@@ -101,6 +103,9 @@ app.get('/modifier-mon-compte', [middleware], function(req, res) {
 const routesKeyword = require('./routes/routesKeyword');
 routesKeyword(app);
 
-app.listen(3000, function() {
-    console.log('Example app listening on port 3000!')
-})
+https.createServer({
+    key: fs.readFileSync('./keys/key.pem'),
+    cert: fs.readFileSync('./keys/cert.pem'),
+    passphrase: 'ipssi2019'
+}, app)
+.listen(3000);
