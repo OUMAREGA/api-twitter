@@ -132,7 +132,7 @@ function getKeywords() {
                 keywords.forEach(element => {
                     const newOption = document.createElement("option");
                     newOption.text = element.word;
-                    newOption.value = element.user.date_ajout;
+                    newOption.value = element.word+"&"+element.user.date_ajout;
                     keywordsList.add(newOption);
                 });
             } else {
