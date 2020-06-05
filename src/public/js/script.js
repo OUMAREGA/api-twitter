@@ -148,11 +148,14 @@ function getKeywords() {
 
 
 
-function fetchStats(word)
+function fetchStats(value)
 {
+    const array = value.split("&");
+    const word = array[0];
+    const date = array[1];
     return $.ajax({
         method: "GET",
-        url: "/stats/"+word
+        url: "/stats/"+word+"/"+date
     })
 }
 
