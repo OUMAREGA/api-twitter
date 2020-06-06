@@ -8,8 +8,10 @@ exports.store = async () => {
  
   cron.schedule('*/10 * * * *', async () =>  {
 
+    const token = process.env.TOKEN;
+
     let today = new Date();
-    let intervalle = 10;
+    let intervalle = 1;
     let start_time = today;
     let end_time = today;
 
@@ -33,7 +35,7 @@ exports.store = async () => {
           await fetch(`https://api.twitter.com/labs/2/tweets/search?start_time=${start_time}&end_time=${end_time}&max_results=100&tweet.fields=created_at&query=%23${item.word}`, {
             method: "GET",
             headers: {
-                "Authorization": process.env.TOKEN
+                "Authorization": token
             }
         }).then(res => res.json()) // expecting a json response
         .then( async (json) =>  {
@@ -50,7 +52,7 @@ exports.store = async () => {
                 await fetch("https://api.twitter.com/labs/2/tweets/search?start_time="+start_time+"&end_time="+end_time+"&max_results=100&tweet.fields=created_at&query=%23"+item.word, {
                   method: "GET",
                   headers: {
-                      "Authorization": process.env.TOKEN
+                      "Authorization": token
                   }
               }).then(res => res.json()).then(json => {
 
@@ -63,18 +65,14 @@ exports.store = async () => {
 
               })
 
-              }//end while
+              }
 
            }
-           else{
-             console.log("pas de next_toke")
-           }
-
-          // console.log("nbt",nb_tweets  )
+          
            let req = {}
           
            req.body = {
-            "keyword": item,
+            "keyword": item.word,
             "nb_tweets" : nb_tweets
           }
 
