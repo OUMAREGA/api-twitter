@@ -2,6 +2,8 @@ const cron = require("node-cron");
 const Keyword = require('./models/KeywordModel');
 const Stats = require('./controllers/StatsKeywordController');
 const fetch = require('node-fetch')
+const moment = require('moment-timezone');
+
 
 
 exports.store = async () => { 
@@ -11,7 +13,7 @@ exports.store = async () => {
     const token = process.env.TOKEN;
 
     let today = new Date();
-    let intervalle = 1;
+    let intervalle = 10;
     let start_time = today;
     let end_time = today;
 
@@ -70,10 +72,13 @@ exports.store = async () => {
            }
           
            let req = {}
+
+           const dateParis = moment.tz(Date.now(), "Europe/Paris")
           
            req.body = {
             "keyword": item.word,
-            "nb_tweets" : nb_tweets
+            "nb_tweets" : nb_tweets,
+            "date": dateParis
           }
 
           Stats.create_keyword_stat(req)
