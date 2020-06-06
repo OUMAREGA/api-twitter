@@ -132,7 +132,7 @@ function getKeywords() {
                 keywords.forEach(element => {
                     const newOption = document.createElement("option");
                     newOption.text = element.word;
-                    newOption.value = element.user.date_ajout;
+                    newOption.value = element.word+"&"+element.user.date_ajout;
                     keywordsList.add(newOption);
                 });
             } else {
@@ -148,11 +148,14 @@ function getKeywords() {
 
 
 
-function fetchStats(word)
+function fetchStats(value)
 {
+    const array = value.split("&");
+    const word = array[0];
+    const date = array[1];
     return $.ajax({
         method: "GET",
-        url: "/stats/"+word
+        url: "/stats/"+word+"/"+date
     })
 }
 
