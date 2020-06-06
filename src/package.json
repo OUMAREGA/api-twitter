@@ -20,6 +20,7 @@
         "express": "^4.17.1",
         "express-session": "^1.17.1",
         "jquery": "^3.5.1",
+        "moment-timezone": "^0.5.31",
         "mongoose": "^5.9.15",
         "mongoose-beautiful-unique-validation": "^7.1.1",
         "mongoose-unique-validator": "^2.0.3",
