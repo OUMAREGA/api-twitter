@@ -1,6 +1,8 @@
 const User = require('../models/UserModel');
 const bcrypt = require('bcrypt');
+const OAuth = require('oauth');
 const saltRounds = 10;
+const { promisify } = require('util');
 
 const fetch = require('node-fetch')
 
@@ -63,13 +65,20 @@ let UserController = {
                     erreurs.push('Vérifiez vos identifiants');
                     res.render("connexion.ejs", { erreurs: erreurs });
                 } else {
-
+                    //Vérification du mot de passe
                     bcrypt.compare(password, users[0].password, function (err, result) {
 
                         if (result == true) {
+                            //Variables de session "connecté", informations de l'utilisateur
                             req.session.connected = true;
                             req.session.userData = users[0];
-                            res.redirect('/');
+                            //Générer le bearer token
+                            let bearerToken = generateBearerToken();
+                            bearerToken.then((token) => console.log("TOKEN: " + token));
+                            //Variable de session "bearerToken"
+
+                            //Redirection vers l'acceuil pour utilisateur connecté
+                            res.redirect('/')
                         } else {
                             erreurs.push('Mot de passe incorrect');
                             res.render("connexion.ejs", { erreurs: erreurs });
@@ -244,6 +253,20 @@ const checkForm = (req,res,errors,update) => {
             res.redirect("/mon-compte");
         }
     })
+}
+
+const generateBearerToken = async () => {
+
+    const oauth2 = new OAuth.OAuth2(
+        process.env.API_KEY,
+        process.env.API_SECRET_KEY,
+        'https://api.twitter.com/', null, 'oauth2/token', null
+    );
+
+    const getOAuthAccessToken = promisify(oauth2.getOAuthAccessToken.bind(oauth2));
+    const accessToken = await getOAuthAccessToken('', { grant_type: 'client_credentials' });
+    
+    return accessToken;
 }
 
 module.exports = UserController;
