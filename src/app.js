@@ -43,7 +43,7 @@ app.get('/',[middleware], function(req, res) {
     {
         let pseudo_twitter = req.session.userData.pseudo_twitter
         
-            user.getUserTweet(pseudo_twitter).then(data =>
+            user.getUserTweet(pseudo_twitter,req.session.bearerToken).then(data =>
                 {
                     if(data.statuses){
                         res.render("index.ejs", {

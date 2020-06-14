@@ -3,14 +3,16 @@ const Keyword = require('./models/KeywordModel');
 const Stats = require('./controllers/StatsKeywordController');
 const fetch = require('node-fetch')
 const moment = require('moment-timezone');
-
+const { promisify } = require('util');
+const OAuth = require("oauth");
 
 
 exports.store = async () => { 
  
   cron.schedule('*/10 * * * *', async () =>  {
 
-    const token = process.env.TOKEN;
+    const token = await generateBearerToken();
+
 
     let today = new Date();
     let intervalle = 10;
@@ -94,4 +96,20 @@ exports.store = async () => {
   });
 };
 
+const generateBearerToken = async () => {
+
+  let oauth2 = OAuth.OAuth2;
+  oauth2 = new oauth2(
+      process.env.API_KEY,
+      process.env.API_SECRET_KEY,
+      'https://api.twitter.com/', 
+      null, 
+      'oauth2/token', 
+      null
+  );
+      
+  const getOAuthAccessToken = promisify(oauth2.getOAuthAccessToken.bind(oauth2));
+  const accessToken = await getOAuthAccessToken('', { grant_type: 'client_credentials' });
+  return "Bearer " + accessToken;
+}
 // https://api.twitter.com/labs/2/tweets/search?start_time=2020-05-25T15:00:00.000Z&end_time=2020-05-25T15:00:30.000Z&max_results=100&tweet.fields=created_at&query=%23covid
