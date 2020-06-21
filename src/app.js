@@ -43,7 +43,7 @@ app.get('/',[middleware], function(req, res) {
     {
         let pseudo_twitter = req.session.userData.pseudo_twitter
         
-            user.getUserTweet(pseudo_twitter).then(data =>
+            user.getUserTweet(pseudo_twitter,req.session.bearerToken).then(data =>
                 {
                     if(data.statuses){
                         res.render("index.ejs", {
@@ -103,9 +103,15 @@ app.get('/modifier-mon-compte', [middleware], function(req, res) {
 const routesKeyword = require('./routes/routesKeyword');
 routesKeyword(app);
 
+app.listen(3000, function() {
+    console.log('Example app listening on port 3000!')
+}) 
+
+/*
 https.createServer({
     key: fs.readFileSync('./keys/key.pem'),
     cert: fs.readFileSync('./keys/cert.pem'),
     passphrase: 'ipssi2019'
 }, app)
 .listen(3000);
+*/
