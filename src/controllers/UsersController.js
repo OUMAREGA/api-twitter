@@ -1,6 +1,8 @@
 const User = require('../models/UserModel');
 const bcrypt = require('bcrypt');
+const OAuth = require('oauth');
 const saltRounds = 10;
+const { promisify } = require('util');
 
 const fetch = require('node-fetch')
 
@@ -63,13 +65,19 @@ let UserController = {
                     erreurs.push('Vérifiez vos identifiants');
                     res.render("connexion.ejs", { erreurs: erreurs });
                 } else {
+                    //Vérification du mot de passe
 
-                    bcrypt.compare(password, users[0].password, function (err, result) {
-
+                    bcrypt.compare(password, users[0].password, async function (err, result) {
                         if (result == true) {
+                            //Variables de session "connecté", informations de l'utilisateur
                             req.session.connected = true;
                             req.session.userData = users[0];
-                            res.redirect('/');
+                            //Générer le bearer token
+                            let bearerToken = await generateBearerToken();
+                            //Variable de session "bearerToken"
+                            req.session.bearerToken = bearerToken;
+                            //Redirection vers l'acceuil pour utilisateur connecté
+                            res.redirect('/')
                         } else {
                             erreurs.push('Mot de passe incorrect');
                             res.render("connexion.ejs", { erreurs: erreurs });
@@ -149,7 +157,7 @@ let UserController = {
             fetch("https://api.twitter.com/labs/2/users/by/username/" + req.body.pseudo_twitter, {
                 method: "GET",
                 headers: {
-                    "Authorization": process.env.TOKEN
+                    "Authorization": req.session.bearerToken
                 }
             }).then(res => res.json())
                 .then((json) => {
@@ -179,11 +187,12 @@ let UserController = {
         });
     },
 
-    async getUserTweet(pseudo) {
+    async getUserTweet(pseudo,token) {
+        console.log(token)
         let response = await fetch("https://api.twitter.com/1.1/search/tweets.json?q=from:" + pseudo+"&tweet_mode=extended", {
             method: "GET",
             headers: {
-                "Authorization": process.env.TOKEN
+                "Authorization": token
             }
         })
         let data = await response.json();
@@ -244,6 +253,23 @@ const checkForm = (req,res,errors,update) => {
             res.redirect("/mon-compte");
         }
     })
+}
+
+const generateBearerToken = async () => {
+
+    let oauth2 = OAuth.OAuth2;
+    oauth2 = new oauth2(
+        process.env.API_KEY,
+        process.env.API_SECRET_KEY,
+        'https://api.twitter.com/', 
+        null, 
+        'oauth2/token', 
+        null
+    );
+        
+    const getOAuthAccessToken = promisify(oauth2.getOAuthAccessToken.bind(oauth2));
+    const accessToken = await getOAuthAccessToken('', { grant_type: 'client_credentials' });
+    return "Bearer " + accessToken;
 }
 
 module.exports = UserController;

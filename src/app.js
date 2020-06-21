@@ -14,6 +14,7 @@ mongoose.connect("mongodb://mongo/api_twitter_BDD");
 
 const middleware = require('./controllers/AuthMiddleware');
 const statsRoute = require('./routes/routeStatsKeyword');
+const Access = require('./controllers/AccessMiddleware');
 
 app.use(session({
     secret: 'P)j5yBV(kShrY{*@',
@@ -42,7 +43,7 @@ app.get('/',[middleware], function(req, res) {
     {
         let pseudo_twitter = req.session.userData.pseudo_twitter
         
-            user.getUserTweet(pseudo_twitter).then(data =>
+            user.getUserTweet(pseudo_twitter,req.session.bearerToken).then(data =>
                 {
                     if(data.statuses){
                         res.render("index.ejs", {
@@ -68,8 +69,7 @@ app.get('/',[middleware], function(req, res) {
 CronStoreStats.store();
 
 //Accède à la page connexion
-app.get('/connexion', function(req, res) {
-    
+app.get('/connexion',[Access], function(req, res) {
     let subscribeOk = "";
     let deleteOk = "";
     if(req.session.hasOwnProperty("success")){
@@ -83,7 +83,7 @@ app.get('/connexion', function(req, res) {
 })
 
 //Accède à la page inscription
-app.get('/form-sign', function(req, res) {
+app.get('/form-sign',[Access], function(req, res) {
     res.render("form-sign.ejs")
 })
 
@@ -102,4 +102,6 @@ app.get('/modifier-mon-compte', [middleware], function(req, res) {
 const routesKeyword = require('./routes/routesKeyword');
 routesKeyword(app);
 
+
 app.listen(3000);
+

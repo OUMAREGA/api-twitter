@@ -5,6 +5,7 @@ exports.add_keyword = (req, res) => {
 
     //test avec req.body.pseudo
     const userPseudo = req.session.userData.pseudo;
+    const token = req.session.bearerToken;
 
     //On vérifie si le mot clé existe déjà
     Keyword.findOne({ word: word })
