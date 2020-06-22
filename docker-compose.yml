@@ -8,11 +8,25 @@ services:
         - "/bin/bash"
         - "-c"
         - "npm install && npm start" 
-    ports:
-      - '3000:3000'
     volumes:
-      - './src:/home/node/app'
-    env_file: '.env'      
+        - './src:/home/node/app'
+    env_file: '.env'     
+  
+  web-nginx:
+    depends_on: 
+        - node  
+    image: nginx:latest
+    working_dir: /etc/nginx/conf.d
+    ports:
+        - "3000:80"
+        - "443:443"
+    volumes:
+        - "$PWD/nginx:/etc/nginx/conf.d"  
+    command:
+            - "/bin/bash"
+            - "-c"
+            - "./entrypoint.sh"    
+
   mongo:
     container_name: api_twitter_mongo
     image: mongo

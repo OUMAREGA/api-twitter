@@ -8,7 +8,6 @@ const session = require('express-session');
 const user = require('./controllers/UsersController');
 const MongoStore = require('connect-mongo')(session);
 const CronStoreStats =  require('./CronStoreStats');
-const https = require('https');
 const fs = require('fs');
 
 mongoose.connect("mongodb://mongo/api_twitter_BDD");
@@ -103,15 +102,6 @@ app.get('/modifier-mon-compte', [middleware], function(req, res) {
 const routesKeyword = require('./routes/routesKeyword');
 routesKeyword(app);
 
-app.listen(3000, function() {
-    console.log('Example app listening on port 3000!')
-}) 
 
-/*
-https.createServer({
-    key: fs.readFileSync('./keys/key.pem'),
-    cert: fs.readFileSync('./keys/cert.pem'),
-    passphrase: 'ipssi2019'
-}, app)
-.listen(3000);
-*/
+app.listen(3000);
+
