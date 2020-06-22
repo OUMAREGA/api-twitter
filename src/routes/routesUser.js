@@ -9,8 +9,28 @@ const middleware = require('../controllers/AuthMiddleware')
 
 //Routes for User
 let UserRoutes = function(app) 
-{
-    let router = express.Router();
+{       
+    app.use((req,res,next)=>{
+        if(req.session.userData)
+            res.locals.currentUser = req.session.userData;
+        else
+            delete res.locals.currentUser;
+        
+
+        if(req.session.twitter_subscribe)
+            res.locals.twitter_subscribe = true;
+        else
+            delete res.locals.twitter_subscribe;
+
+        if(req.session.errorForms)
+            res.locals.errorForms = req.session.errorForms;
+        else
+            delete res.locals.errorForms;    
+            
+        next();
+    })
+
+    const router = app;
 
     router.route('/sign-users')
     .post(UserController.create);

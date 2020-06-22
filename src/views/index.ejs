@@ -13,7 +13,7 @@
     <%- include("Navbar.component.ejs", { page: "Accueil" }) %>
         <div class="container">
             <h2>Bienvenue
-                <%= pseudo %> !
+                <%= currentUser.pseudo %> !
             </h2>
             <% if (pseudo_twitter === '') { %>
                 <p><a href="/modifier-mon-compte" class="btn btn-info my-3">Lier un compte twitter</a></p>

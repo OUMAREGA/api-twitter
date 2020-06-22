@@ -11,12 +11,14 @@ let UserController = {
     //Créé un User
 
     create: function (req, res) {
+      
+        let erreurs = [];
 
+        if(!req.session.twitter_subscribe){
         let repassword = req.body.inputPasswordC;
         let password = req.body.inputPassword;
         let userEmail = req.body.inputEmail;
         let userPseudo = req.body.inputPseudo;
-        let erreurs = [];
 
         //Vérifie si l'email existe déjà
 
@@ -47,6 +49,25 @@ let UserController = {
                 }
             });
         });
+    }else{
+        let user = new User();
+        user.pseudo = req.session.pseudo_twitter;
+        user.pseudo_twitter = req.session.pseudo_twitter;
+        user.email = req.body.inputEmail;
+        user.password = "TWITTER_PASSWORD_ACCOUNT"
+        user.save((err)=>{
+            if(err){
+                Object.values(User.catchErrors(err)).forEach((error) => erreurs.push(error))
+                console.log(erreurs)
+                req.session.errorForms = erreurs;
+                res.redirect("/form-sign");
+            }else{
+                req.session.userData = user;
+                res.redirect("/connect")
+            }
+
+        })
+    }
 
     },
 
@@ -113,7 +134,7 @@ let UserController = {
             delete req.session.errors;
 
         }
-        console.log(data)
+        console.log(data,error)
         res.render("modifier-mon-compte.ejs", { error, user: data })
     },
 

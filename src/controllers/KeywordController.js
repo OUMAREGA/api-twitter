@@ -63,7 +63,7 @@ exports.get_keywords = (req, res) => {
         .then(result => {
             if (result.length === 0) {
                 res.json({message:"Aucun mot clé associé pour cet utilisateur"});
-            }
+            }else{
             let userKeywords = [];
 
             result.forEach(element => {
@@ -76,6 +76,7 @@ exports.get_keywords = (req, res) => {
             });
 
             res.json(userKeywords);
+        }
         });
 }
 
