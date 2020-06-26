@@ -8,7 +8,7 @@ const generateBearerToken = require('./util/generateBearerToken')
 
 exports.store = async () => { 
  
-  cron.schedule('*/1 * * * *', async () =>  {
+  cron.schedule('*/10 * * * *', async () =>  {
 
     const token = await generateBearerToken();
 
@@ -59,7 +59,7 @@ exports.store = async () => {
                       "Authorization": token
                   }
               }).then(res => res.json()).then(json => {
-                console.log("Data received : ", json)
+                //console.log("Data received : ", json)
                 nb_tweets += json.meta.result_count;
 
                 end_time = json.data[0].created_at;
