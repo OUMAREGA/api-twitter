@@ -1,11 +1,8 @@
 const User = require('../models/UserModel');
 const bcrypt = require('bcrypt');
-const OAuth = require('oauth');
 const saltRounds = 10;
-const { promisify } = require('util');
-
 const fetch = require('node-fetch')
-
+const generateBearerToken = require('../util/generateBearerToken')
 
 //Controller pour User
 let UserController = {
@@ -14,41 +11,64 @@ let UserController = {
 
     create: function (req, res) {
 
-        let repassword = req.body.inputPasswordC;
-        let password = req.body.inputPassword;
-        let userEmail = req.body.inputEmail;
-        let userPseudo = req.body.inputPseudo;
         let erreurs = [];
 
-        //Vérifie si l'email existe déjà
+
+        if(!req.session.twitter_subscribe){
+
+            let repassword = req.body.inputPasswordC;
+            let password = req.body.inputPassword;
+            let userEmail = req.body.inputEmail;
+            let userPseudo = req.body.inputPseudo;
+
+            //Vérifie si l'email existe déjà
 
 
-        if (password !== repassword) {
-            erreurs.push('Les mots de passe ne correspondent pas.');
-        }
+            if (password !== repassword) {
+                erreurs.push('Les mots de passe ne correspondent pas.');
+            }
 
-        bcrypt.hash(password, saltRounds, function (err, hash) {
-            //Creation de User
-            let user = new User();
-            user.pseudo = userPseudo;
-            user.email = userEmail;
-            user.password = hash;
+            bcrypt.hash(password, saltRounds, function (err, hash) {
+                //Creation de User
+                let user = new User();
+                user.pseudo = userPseudo;
+                user.email = userEmail;
+                user.password = hash;
 
-            user.save(function (err) {
-                if (err) {
-                    Object.values(User.catchErrors(err)).forEach((error) => erreurs.push(error))
-                }
-    
-                if (erreurs.length > 0) {
-                    res.render("form-sign.ejs", { erreurs: erreurs });
-                    return;
-                } else {
-                    req.session.success = true;
-                    res.redirect("/connexion");
-                    return;
-                }
+                user.save(function (err) {
+                    if (err) {
+                        Object.values(User.catchErrors(err)).forEach((error) => erreurs.push(error))
+                    }
+        
+                    if (erreurs.length > 0) {
+                        res.render("form-sign.ejs", { erreurs: erreurs });
+                        return;
+                    } else {
+                        req.session.success = true;
+                        res.redirect("/connexion");
+                        return;
+                    }
+                });
             });
-        });
+        }else{
+            let user = new User();
+            user.pseudo = req.session.pseudo_twitter;
+            user.pseudo_twitter = req.session.pseudo_twitter;
+            user.email = req.body.inputEmail;
+            user.password = "TWITTER_PASSWORD_ACCOUNT"
+            user.save((err)=>{
+                if(err){
+                    Object.values(User.catchErrors(err)).forEach((error) => erreurs.push(error))
+                    console.log("errors",erreurs)
+                    req.session.errorForms = erreurs;
+                    res.redirect("/form-sign");
+                }else{
+                    req.session.userData = user;
+                    res.redirect("/")
+                }
+
+            })
+        }
 
     },
 
@@ -136,6 +156,7 @@ let UserController = {
         }
 
         let update = true;
+        if(!req.session.twitter_subscribe){
         if (req.body.old_password.length > 0) {
             if (req.body.password.length == 0) {
                 errors.password = "Vous devez saisir votre nouveau mot de passe"
@@ -174,6 +195,13 @@ let UserController = {
                 });
         } else 
             checkForm(req,res,errors,update);
+    }else{
+        if(req.session.userData.email == req.body.email)
+        {
+            errors.email = "L'adresse mail saisie est identique"
+        }
+        checkForm(req,res,errors,update);
+    }
         
     },
     logout: function (req, res) {
@@ -188,7 +216,7 @@ let UserController = {
     },
 
     async getUserTweet(pseudo,token) {
-        console.log(token)
+        console.log('token : ',token)
         let response = await fetch("https://api.twitter.com/1.1/search/tweets.json?q=from:" + pseudo+"&tweet_mode=extended", {
             method: "GET",
             headers: {
@@ -220,56 +248,64 @@ const checkForm = (req,res,errors,update) => {
         }
     })  
     console.log(errors)
-    const newData = { //on récupère les nouvelles valeurs, sinon on reste avec les valeurs initiales pour la mise à jour (sorte de patch)
-        email: req.body.email.length > 0 ? req.body.email : req.session.userData.email,
-        pseudo: req.body.pseudo.length > 0 ? req.body.pseudo : req.session.userData.pseudo,
-        password: req.body.password.length > 0 ? req.body.password : req.session.userData.password,
-        pseudo_twitter: req.body.pseudo_twitter
-    }
-
-    if(newData.pseudo_twitter.length == 0)
-        delete newData.pseudo_twitter;
-    console.log(req.session.userData.email)
-    User.findOneAndUpdate({ email: req.session.userData.email }, newData, { new: true, runValidators: true, context: "query" }, (err, user) => {
-        
-        if (err != null || !update) {
-            const { pseudo, email } = User.catchErrors(err); //erreurs qui ne peuvent qu'intervenir depuis Mongoose
-            console.log(pseudo, email)
-            errors.email = (email.length == 0) ? "" : email;
-            errors.pseudo = (pseudo.length == 0) ? "" : pseudo;
-            req.session.previous = {};
-            req.session.previous["email"] = req.body.email;
-            req.session.previous["pseudo"] = req.body.pseudo;
-            req.session.previous["pseudo_twitter"] = req.body.pseudo_twitter;
-            console.log(req.session.previous)
-            req.session.errors = errors;
-            res.redirect("/modifier-mon-compte")
-        } else {
-            req.session.userData.email = newData.email;
-            req.session.userData.pseudo = newData.pseudo;
-            req.session.userData.password = newData.password;
-            req.session.userData.pseudo_twitter = newData.pseudo_twitter;
-            req.session.success = "Votre compte a bien été mis à jour !"
-            res.redirect("/mon-compte");
+    if(!req.session.twitter_subscribe){
+        const newData = { //on récupère les nouvelles valeurs, sinon on reste avec les valeurs initiales pour la mise à jour (sorte de patch)
+            email: req.body.email.length > 0 ? req.body.email : req.session.userData.email,
+            pseudo: req.body.pseudo.length > 0 ? req.body.pseudo : req.session.userData.pseudo,
+            password: req.body.password.length > 0 ? req.body.password : req.session.userData.password,
+            pseudo_twitter: req.body.pseudo_twitter
         }
-    })
-}
 
-const generateBearerToken = async () => {
-
-    let oauth2 = OAuth.OAuth2;
-    oauth2 = new oauth2(
-        process.env.API_KEY,
-        process.env.API_SECRET_KEY,
-        'https://api.twitter.com/', 
-        null, 
-        'oauth2/token', 
-        null
-    );
-        
-    const getOAuthAccessToken = promisify(oauth2.getOAuthAccessToken.bind(oauth2));
-    const accessToken = await getOAuthAccessToken('', { grant_type: 'client_credentials' });
-    return "Bearer " + accessToken;
+        if(newData.pseudo_twitter.length == 0)
+            delete newData.pseudo_twitter;
+        console.log(req.session.userData.email)
+        User.findOneAndUpdate({ email: req.session.userData.email }, newData, { new: true, runValidators: true, context: "query" }, (err, user) => {
+            
+            if (err != null || !update) {
+                const { pseudo, email } = User.catchErrors(err); //erreurs qui ne peuvent qu'intervenir depuis Mongoose
+                console.log(pseudo, email)
+                errors.email = (email.length == 0) ? "" : email;
+                errors.pseudo = (pseudo.length == 0) ? "" : pseudo;
+                req.session.previous = {};
+                req.session.previous["email"] = req.body.email;
+                req.session.previous["pseudo"] = req.body.pseudo;
+                req.session.previous["pseudo_twitter"] = req.body.pseudo_twitter;
+                console.log(req.session.previous)
+                req.session.errors = errors;
+                res.redirect("/modifier-mon-compte")
+            } else {
+                req.session.userData.email = newData.email;
+                req.session.userData.pseudo = newData.pseudo;
+                req.session.userData.password = newData.password;
+                req.session.userData.pseudo_twitter = newData.pseudo_twitter;
+                req.session.success = "Votre compte a bien été mis à jour !"
+                res.redirect("/mon-compte");
+            }
+        })
+    }else{
+        const newData = { //on récupère les nouvelles valeurs, sinon on reste avec les valeurs initiales pour la mise à jour (sorte de patch)
+            email: req.body.email.length > 0 ? req.body.email : req.session.userData.email,
+            pseudo: req.session.userData.pseudo,
+            password: req.session.userData.password,
+            pseudo_twitter: req.session.userData.pseudo
+        }
+        User.findOneAndUpdate({ email: req.session.userData.email }, newData, { new: true, runValidators: true, context: "query" }, (err, user) => {
+            if(err != null)
+            {
+                console.log(newData)
+                const { email } = User.catchErrors(err)
+                req.session.previous = {};
+                errors.email = (email.length == 0) ? "" : email;
+                req.session.previous["email"] = newData.email;
+                req.session.errors = errors;
+                res.redirect("/modifier-mon-compte")
+            }else{
+                req.session.userData.email = req.body.email;
+                req.session.success = "Votre compte a bien été mis à jour !"
+                res.redirect("/mon-compte");
+            }
+        });
+    }
 }
 
 module.exports = UserController;
