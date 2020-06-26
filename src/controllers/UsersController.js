@@ -64,7 +64,7 @@ let UserController = {
                     res.redirect("/form-sign");
                 }else{
                     req.session.userData = user;
-                    res.redirect("/")
+                    res.redirect("/ ")
                 }
 
             })

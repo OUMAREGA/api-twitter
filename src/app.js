@@ -173,9 +173,7 @@ app.get('/form-sign',[Access], function(req, res) {
 
 app.get("/dashboard",[middleware],(req,res) => {
 
-    const fakeKeywords = ["Covid","IPSSI","Santé","Bekofere"];
-
-    res.render("dashboard.ejs", { keywords: fakeKeywords })
+    res.render("dashboard.ejs")
 })
 
 app.get('/modifier-mon-compte', [middleware], function(req, res) {
