@@ -126,20 +126,12 @@ app.get('/twitter/connect', function(req, res){
       } else {  
         req.session.oauthRequestToken = oauthToken;
         req.session.oauthRequestTokenSecret = oauthTokenSecret;
-        console.log("Double check on 2nd step");
-        console.log("------------------------");
-        console.log("<<"+req.session.oauthRequestToken);
-        console.log("<<"+req.session.oauthRequestTokenSecret);
         res.redirect("https://twitter.com/oauth/authorize?oauth_token="+req.session.oauthRequestToken);      
       }
     });
   });
 
   app.get('/twitter/callback', function(req, res){
-    console.log("------------------------");
-    console.log(">>"+req.session.oauthRequestToken);
-    console.log(">>"+req.session.oauthRequestTokenSecret);
-    console.log(">>"+req.query.oauth_verifier);
     consumer.getOAuthAccessToken(req.session.oauthRequestToken, req.session.oauthRequestTokenSecret, req.query.oauth_verifier, function(error, oauthAccessToken, oauthAccessTokenSecret, result) {
       if (error) {
         res.send("Error getting OAuth access token : " + inspect(error) + "[" + oauthAccessToken + "]" + "[" + oauthAccessTokenSecret + "]" + "[" + inspect(result) + "]", 500);
@@ -156,7 +148,6 @@ app.get('/twitter/connect', function(req, res){
                 let bearerToken = await generateBearerToken();
                 //Variable de session "bearerToken"
                 req.session.bearerToken = bearerToken;
-                console.log("found",user)
                 req.session.userData = user;
                 res.redirect('/');
             }

@@ -27,15 +27,12 @@ exports.store = async () => {
     //start_time = start_time.toISOString();
 
 
-    console.log({start_time, end_time})
+
 
     Keyword.find().select(["word"]).then(
       resp => {
         resp.forEach(async (item) => {
 
-          console.log("res",item.word, start_time)
-          console.log(`https://api.twitter.com/labs/2/tweets/search?start_time=${start_time}&end_time=${end_time}&max_results=100&tweet.fields=created_at&query=%23${item.word}`);
-          console.log(token)
           await fetch(`https://api.twitter.com/labs/2/tweets/search?start_time=${start_time}&end_time=${end_time}&max_results=100&tweet.fields=created_at&query=%23${item.word}`, {
             method: "GET",
             headers: {
@@ -59,7 +56,7 @@ exports.store = async () => {
                       "Authorization": token
                   }
               }).then(res => res.json()).then(json => {
-                //console.log("Data received : ", json)
+
                 nb_tweets += json.meta.result_count;
 
                 end_time = json.data[0].created_at;

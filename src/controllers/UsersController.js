@@ -59,7 +59,6 @@ let UserController = {
             user.save((err)=>{
                 if(err){
                     Object.values(User.catchErrors(err)).forEach((error) => erreurs.push(error))
-                    console.log("errors",erreurs)
                     req.session.errorForms = erreurs;
                     res.redirect("/form-sign");
                 }else{
@@ -129,7 +128,6 @@ let UserController = {
             pseudo_twitter: req.session.userData.pseudo_twitter
         }
 
-        console.log(data)
         if (req.session.hasOwnProperty("errors")) {
             error = req.session.errors;
             if (req.session.hasOwnProperty("previous")) {
@@ -141,7 +139,7 @@ let UserController = {
             delete req.session.errors;
 
         }
-        console.log(data)
+
         res.render("modifier-mon-compte.ejs", { error, user: data })
     },
 
@@ -182,7 +180,7 @@ let UserController = {
                 }
             }).then(res => res.json())
                 .then((json) => {
-                    console.log(json)
+
                     if (json.hasOwnProperty("errors")){
                         if (json.errors[0].title === 'Not Found Error') 
                             errors.pseudo_twitter = "Ce compte Twitter n'existe pas";  
@@ -216,7 +214,7 @@ let UserController = {
     },
 
     async getUserTweet(pseudo,token) {
-        console.log('token : ',token)
+
         let response = await fetch("https://api.twitter.com/1.1/search/tweets.json?q=from:" + pseudo+"&tweet_mode=extended", {
             method: "GET",
             headers: {
@@ -247,7 +245,7 @@ const checkForm = (req,res,errors,update) => {
             return;
         }
     })  
-    console.log(errors)
+
     if(!req.session.twitter_subscribe){
         const newData = { //on récupère les nouvelles valeurs, sinon on reste avec les valeurs initiales pour la mise à jour (sorte de patch)
             email: req.body.email.length > 0 ? req.body.email : req.session.userData.email,
@@ -258,19 +256,19 @@ const checkForm = (req,res,errors,update) => {
 
         if(newData.pseudo_twitter.length == 0)
             delete newData.pseudo_twitter;
-        console.log(req.session.userData.email)
+
         User.findOneAndUpdate({ email: req.session.userData.email }, newData, { new: true, runValidators: true, context: "query" }, (err, user) => {
             
             if (err != null || !update) {
                 const { pseudo, email } = User.catchErrors(err); //erreurs qui ne peuvent qu'intervenir depuis Mongoose
-                console.log(pseudo, email)
+
                 errors.email = (email.length == 0) ? "" : email;
                 errors.pseudo = (pseudo.length == 0) ? "" : pseudo;
                 req.session.previous = {};
                 req.session.previous["email"] = req.body.email;
                 req.session.previous["pseudo"] = req.body.pseudo;
                 req.session.previous["pseudo_twitter"] = req.body.pseudo_twitter;
-                console.log(req.session.previous)
+
                 req.session.errors = errors;
                 res.redirect("/modifier-mon-compte")
             } else {
@@ -292,7 +290,7 @@ const checkForm = (req,res,errors,update) => {
         User.findOneAndUpdate({ email: req.session.userData.email }, newData, { new: true, runValidators: true, context: "query" }, (err, user) => {
             if(err != null)
             {
-                console.log(newData)
+
                 const { email } = User.catchErrors(err)
                 req.session.previous = {};
                 errors.email = (email.length == 0) ? "" : email;
