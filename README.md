@@ -37,6 +37,14 @@ Si vous souhaitez tester ce projet, vous aurez besoin des éléments suivants :
 2) Lancez le projet depuis la commande : `docker-compose up`
 3) Rendez-vous sur l'application depuis https://localhost 
 
-**Remarque** : ce projet fonctionne sous Docker pour des perspectives de **développement**. Vous êtes libres de proposer de nouvelles fonctionnalités, signaler des bugs etc.
+**Remarques** : 
+
+- Ce projet fonctionne sous Docker pour des perspectives de **développement**. Vous êtes libres de proposer de nouvelles fonctionnalités, signaler des bugs etc.
 D'où la raison de générer des **certificats TLS auto-signés** pour assurer une approche de sécurité HTTPS.
+
+- Assurez-vous que les ports suivants ne soient pas déjà utilisés :
+
+   - 3000 (serveur node)
+   - 443 (reverse-proxy HTTPS)
+   - 27017
 
