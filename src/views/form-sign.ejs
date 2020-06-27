@@ -20,7 +20,7 @@
                             <ul>
                         <% erreurs.forEach(function(erreur){ %>
                                 <% if(erreur.length > 0) { %>    
-                                <li class="text-black"><%= erreur %></li>
+                                <li class="text"><%= erreur %></li>
                                 <% } %>
                         
                         <% });%>
@@ -56,7 +56,7 @@
                                 <% 
                                     errorForms.forEach((erreur)=>{
                                         if(erreur.length > 0) { %>
-                                            <%= erreur %>
+                                            <li class="text"><%= erreur %></li>
                                         <% } 
                                     })
                                 %> 
