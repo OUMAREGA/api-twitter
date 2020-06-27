@@ -42,8 +42,15 @@ app.use(bodyParser.json());
 userRoutes(app);
 statsRoute(app);
 
-app.use((req,res,next)=>{
-
+app.use((req,res,next)=>{ //utilisation d'un middleware pour pouvoir exposer des variables aux templates EJS
+    
+    /**
+     * Les templates EJS sont renvoyés par la méthode render() de l'objet res
+     * On peut aussi attacher d'autres variables depuis l'attribut "local" du même objet
+     * Cela veut dire que ces variables seront visibles uniquement durant le moment
+     * de la requête, en l'occurrence ici par les templates EJS, si la requête demande
+     * bien sûr le rendu d'un template EJS
+     */
     if(req.session.userData)
         res.locals.currentUser = req.session.userData;
     else
@@ -51,12 +58,12 @@ app.use((req,res,next)=>{
 
 
     if(req.session.twitter_subscribe)
-        res.locals.twitter_subscribe = true;
+        res.locals.twitter_subscribe = true; //va être utilisé dans form-sign.ejs et modifier-mon-compte.ejs (changer les champs des informations qui peuvent être changées)
     else
         delete res.locals.twitter_subscribe;
 
 
-    if(req.session.errorForms)
+    if(req.session.errorForms) //exposer les erreurs des formulaires dans les templates EJS sans passer par la création de variables dans les actions des routes
         res.locals.errorForms = req.session.errorForms;
     else
         delete res.locals.errorForms;    

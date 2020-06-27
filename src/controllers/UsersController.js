@@ -154,7 +154,7 @@ let UserController = {
         }
 
         let update = true;
-        if(!req.session.twitter_subscribe){
+        if(!req.session.twitter_subscribe){ //si c'est un compte classique, on vérifie chaque information
         if (req.body.old_password.length > 0) {
             if (req.body.password.length == 0) {
                 errors.password = "Vous devez saisir votre nouveau mot de passe"
@@ -193,11 +193,8 @@ let UserController = {
                 });
         } else 
             checkForm(req,res,errors,update);
-    }else{
-        if(req.session.userData.email == req.body.email)
-        {
-            errors.email = "L'adresse mail saisie est identique"
-        }
+    }else{ //On a juste à vérifier si l'adresse mail est correcte s'il s'est connecté depuis un compte twitter
+
         checkForm(req,res,errors,update);
     }
         
@@ -280,7 +277,7 @@ const checkForm = (req,res,errors,update) => {
                 res.redirect("/mon-compte");
             }
         })
-    }else{
+    }else{ //si l'utilisateur s'est connecté avec un compte twitter, le seul élément qu'il puisse modifier est l'adresse mail liée à la plateforme
         const newData = { //on récupère les nouvelles valeurs, sinon on reste avec les valeurs initiales pour la mise à jour (sorte de patch)
             email: req.body.email.length > 0 ? req.body.email : req.session.userData.email,
             pseudo: req.session.userData.pseudo,
