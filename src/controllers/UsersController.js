@@ -56,14 +56,15 @@ let UserController = {
             user.pseudo_twitter = req.session.pseudo_twitter;
             user.email = req.body.inputEmail;
             user.password = "TWITTER_PASSWORD_ACCOUNT"
-            user.save((err)=>{
+            user.save(async (err) =>{
                 if(err){
                     Object.values(User.catchErrors(err)).forEach((error) => erreurs.push(error))
                     req.session.errorForms = erreurs;
                     res.redirect("/form-sign");
                 }else{
                     req.session.userData = user;
-                    res.redirect("/ ")
+                    req.session.bearerToken = await generateBearerToken();
+                    res.redirect("/")
                 }
 
             })
@@ -228,6 +229,8 @@ let UserController = {
         User.findOneAndDelete({ pseudo: req.session.userData.pseudo },(err,data) => {
             if(!err){
                 req.session.deleteSuccess = true;
+                delete req.session.bearerToken;
+                delete req.session.twitter_subscribe;
                 res.redirect("/connexion");
             }
         })
