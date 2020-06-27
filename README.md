@@ -46,5 +46,4 @@ D'où la raison de générer des **certificats TLS auto-signés** pour assurer u
 
    - 3000 (serveur node)
    - 443 (reverse-proxy HTTPS)
-   - 27017
 
