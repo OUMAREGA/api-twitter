@@ -34,7 +34,7 @@ Si vous souhaitez tester ce projet, vous aurez besoin des éléments suivants :
 ## Installation
 
 1) Renseignez vos clés API dans le fichier **.env** (après avoir fait un copie du **.env-example** en **.env**)
-2) Lancez le projet depuis la commande : `docker-compose up`
+2) Lancez le projet depuis la commande : `docker-compose up --build -d` (`-d` pour que l'exécution du docker-compose se fasse en arrière-plan, pour qu'il soit "détaché" de votre terminal de commandes)
 3) Rendez-vous sur l'application depuis https://localhost 
 
 **Remarques** : 
