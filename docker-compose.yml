@@ -13,20 +13,16 @@ services:
     env_file: '.env'     
   
   web-nginx:
+    build:
+           context: ./nginx
     depends_on: 
         - node  
-    image: nginx:latest
     working_dir: /etc/nginx/conf.d
     ports:
         - "3000:80"
         - "443:443"
     volumes:
         - "$PWD/nginx:/etc/nginx/conf.d"  
-    command:
-            - "/bin/bash"
-            - "-c"
-            - "./entrypoint.sh"    
-
   mongo:
     container_name: api_twitter_mongo
     image: mongo

@@ -1,5 +1,5 @@
 module.exports = (req,res,next) => {
-    if(!req.session.userData){
+    if(req.session.bearerToken == undefined){
         next();
     } else{
         res.redirect("/");
