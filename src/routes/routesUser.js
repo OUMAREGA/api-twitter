@@ -20,7 +20,7 @@ let UserRoutes = function(app)
         if(req.session.twitter_subscribe)
             res.locals.twitter_subscribe = true;
         else
-            delete res.locals.twitter_subscribe;
+            res.locals.twitter_subscribe = null;
 
         if(req.session.errorForms)
             res.locals.errorForms = req.session.errorForms;

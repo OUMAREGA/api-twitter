@@ -60,7 +60,7 @@ app.use((req,res,next)=>{ //utilisation d'un middleware pour pouvoir exposer des
     if(req.session.twitter_subscribe)
         res.locals.twitter_subscribe = true; //va être utilisé dans form-sign.ejs et modifier-mon-compte.ejs (changer les champs des informations qui peuvent être changées)
     else
-        delete res.locals.twitter_subscribe;
+        res.locals.twitter_subscribe = null;
 
 
     if(req.session.errorForms) //exposer les erreurs des formulaires dans les templates EJS sans passer par la création de variables dans les actions des routes

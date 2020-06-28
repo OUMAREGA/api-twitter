@@ -13,7 +13,7 @@
     <div class="container mt-4">
         <div class="row d-flex justify-content-center">
             <div class="col-6">
-                <% if(typeof(twitter_subscribe) === "undefined") { %>
+                <% if(!twitter_subscribe) { %>
                     <% if(typeof(erreurs) !== "undefined") {%>
                         <div class="alert alert-dismissible alert-danger mb-4">
                             <button type="button" class="close" data-dismiss="alert">&times;</button>
