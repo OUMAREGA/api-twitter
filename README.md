@@ -28,6 +28,7 @@ Si vous souhaitez tester ce projet, vous aurez besoin des éléments suivants :
 
 - **Docker** et **docker-compose** sur votre machine
 - Des **clés API** d'un **compte développeur Twitter**
+  - Vous devez préciser dans la valeur **Callback URL** de l'application qui utilise ces clés, le lien suivant : http://localhost:3000/twitter/callback
   - Si vous utilisez un compte développeur **non-premium** : l'activation de l'option **Tweets and Users** afin que vous bénéficiiez d'un appel de **900 requêtes** / 15 minutes sur le site [**Twitter Developer Labs**](https://developer.twitter.com/en/account/labs)
 
 
