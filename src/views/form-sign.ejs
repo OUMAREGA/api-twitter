@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Formulaire d'inscription</title>
+    <link href="/bs/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-4">
+        <div class="row d-flex justify-content-center">
+            <div class="col-6">
+                <% if(!twitter_subscribe) { %>
+                    <% if(typeof(erreurs) !== "undefined") {%>
+                        <div class="alert alert-dismissible alert-danger mb-4">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <ul>
+                        <% erreurs.forEach(function(erreur){ %>
+                                <% if(erreur.length > 0) { %>    
+                                <li class="text"><%= erreur %></li>
+                                <% } %>
+                        
+                        <% });%>
+                    </ul>    
+                    </div>
+                    <%}%>
+                <h1>Inscription</h1><hr>
+                <form method="post" action="/sign-users">
+                    <div class="form-group">
+                        <label class="col-form-label" for="inputPseudo">Pseudo</label>
+                        <input type="text" class="form-control" id="inputPseudo" name="inputPseudo" aria-describedby="pseudoHelp" placeholder="pseudo" required>
+                        <div class="invalid-feedback">Un pseudo est obligatoire.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="inputEmail">Email</label>
+                        <input type="email" class="form-control" id="inputEmail" name="inputEmail" aria-describedby="emailHelp" placeholder="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="inputPassword">Mot de passe</label>
+                        <input type="password" class="form-control" id="inputPassword" name="inputPassword" placeholder="mot de passe" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="inputPasswordC">Confirmation du mot de passe</label>
+                        <input type="password" class="form-control" id="inputPasswordC" name="inputPasswordC" placeholder="mot de passe" required>
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="S'inscrire">
+                    <a class="ml-4 btn btn-outline-secondary" href="/connexion">Se connecter</a>
+                </form>
+                <% } else { %>
+                    <% if(typeof(errorForms) !== "undefined"){ %>
+                        <div class="alert alert-dismissible alert-danger mb-4">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <% 
+                                    errorForms.forEach((erreur)=>{
+                                        if(erreur.length > 0) { %>
+                                            <li class="text"><%= erreur %></li>
+                                        <% } 
+                                    })
+                                %> 
+                        </div>       
+                    <% } %>
+                    <h1>Authentification Twitter</h1><hr>
+                    <form method="post" action="/sign-users">
+                        <p>Avant de poursuivre, vous devez associer une adresse mail pour utiliser nos services.</p>
+                        <div class="form-group">
+                                <label class="col-form-label" for="inputEmail">Email</label>
+                                <input type="email" class="form-control" id="inputEmail" name="inputEmail" aria-describedby="emailHelp" placeholder="email" required>
+                        </div>
+                        <input type="submit" class="btn btn-primary" value="Continuer">
+                    </form> 
+                <% } %>    
+            </div>
+        </div>
+    </div>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+</body>
+
+</html>

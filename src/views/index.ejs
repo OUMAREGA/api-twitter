@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Accueil</title>
+    <link href="/bs/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <%- include("Navbar.component.ejs", { page: "Accueil" }) %>
+        <div class="container">
+            <h2>Bienvenue
+                <%= currentUser.pseudo %> !
+            </h2>
+            <% if (pseudo_twitter === '') { %>
+                <p><a href="/mon-compte" class="btn btn-info">Lier un compte twitter</a></p>
+            <%}%>
+            <% if (tweets.length > 0 && pseudo_twitter !== '') { %>
+
+                        <p class="lead my-3">Voici vos tweets de la semaine : </p>
+                        <div class="row my-3">
+                            <% tweets.forEach((tweet) => { %>
+                                <div class="card border-secondary mb-3" style="max-width: 20rem;">
+                                    <div class="card-body">
+                                        <p class="card-text"> 
+                                            <%= tweet.full_text %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <% }) %>
+                        </div>
+            <% } %>
+            <% if (pseudo_twitter !== '' && tweets.length === 0) { %>
+                <p class="lead my-3">Vous n'avez effectué aucun tweet durant cette semaine !</p>
+            <% } %>  
+        </div>
+        </div>
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+</body>
+</html>
